@@ -1,0 +1,6 @@
+GameOfLife.sln
+*/Debug/*
+Debug/*
+*/*.vcxproj*
+*/pch*
+GameOfLifeTests
