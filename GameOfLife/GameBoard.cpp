@@ -1,10 +1,10 @@
-#include <iostream>
 #include "GameBoard.h"
 
-game::GameBoard::GameBoard(unsigned width, unsigned height) {
+game::GameBoard::GameBoard(int width, int height) {
 	boardWidth = width;
 	boardHeight = height;
 	gameBoard = std::vector<std::vector<bool>>(boardWidth + 2, std::vector<bool>(boardHeight + 2, 0));
+	states = std::vector<std::string>();
 	generationNumber = 0;
 }
 
@@ -13,7 +13,7 @@ void game::GameBoard::nextState() {
 		for (unsigned j = 1; j < boardHeight + 1; j++) {
 			unsigned aliveCells = 0;
 			for (unsigned xIndex = i - 1; xIndex <= i + 1; xIndex++) {
-				for (unsigned yIndex = j - 1; yIndex <= j + 1; yIndex) {
+				for (unsigned yIndex = j - 1; yIndex <= j + 1; yIndex++) {
 					if (gameBoard[i + xIndex][j + yIndex]) {
 						aliveCells++;
 					}
@@ -37,7 +37,7 @@ void game::GameBoard::nextState() {
 	generationNumber++;
 }
 
-void game::GameBoard::printState() {
+void game::GameBoard::updateState() {
 	state = "";
 	for (unsigned i = 1; i < boardWidth + 1; i++) {
 		for (unsigned j = 1; j < boardHeight + 1; j++) {
@@ -52,31 +52,36 @@ void game::GameBoard::printState() {
 	}
 }
 
-void game::GameBoard::insertPoint(int x_pos, int y_pos) {
-	try
-	{
-		gameBoard[x_pos][y_pos] = !gameBoard[x_pos][y_pos];
+void game::GameBoard::insertPoint(unsigned x_pos, unsigned y_pos) {
+	if ((0 <= x_pos && x_pos < boardWidth) | (0 <= y_pos && y_pos < boardHeight)) {
+		gameBoard[x_pos+1][y_pos+1] = !gameBoard[x_pos+1][y_pos+1];	
 	}
-	catch (const std::out_of_range&)
-	{
-		std::cout << "Oops the point (" << x_pos << " and " << y_pos << ") are not a valid input" << std::endl;
+	else {
+		throw BoardIndexOutOfBounds();
 	}
 }
 
-void game::GameBoard::printGeneration() {
-	printState();
-	std::cout << "Generation " << generationNumber << std::endl;
-	std::cout << state << std::endl;
-}
 
-void game::GameBoard::run() {
+std::vector<std::string> game::GameBoard::run() {
+	updateState();
+	states.push_back(state);
 	for(unsigned i = 0; i < numberOfGenerationsToRun; i++) {
-		printGeneration();
 		nextState();
+		updateState();
+		states.push_back(state);
 	}
-	printGeneration();
+	return states;
+}
+
+std::string game::GameBoard::getState() {
+	updateState();
+	return state;
 }
 
 void game::GameBoard::setTimesRun(unsigned times) {
 	numberOfGenerationsToRun = times;
+}
+
+const char* game::BoardIndexOutOfBounds::what() const throw() {
+	return "Value attempted to access out of bounds";
 }
