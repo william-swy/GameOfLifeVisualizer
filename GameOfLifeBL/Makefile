@@ -1,4 +1,4 @@
-EXENAME = game_of_life
+EXENAME = gameOfLife
 OBJS = main.o GameBoard.o
 
 CXX = g++

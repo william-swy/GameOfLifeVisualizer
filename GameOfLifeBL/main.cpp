@@ -1,3 +1,4 @@
+#include <exception>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -41,7 +42,7 @@ int main()
                 try {
                     gameBoard.insertPoint(x, y);
                 }
-                catch (game::BoardIndexOutOfBounds &e) {
+                catch (std::out_of_range &e) {
                     std::cout << "Oops the point (" << x << " and " << y << ") seems to not be on the environment" << std::endl;
                 }
             }
