@@ -2,6 +2,8 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
+#include<exception>
+
 namespace game {
 	/**
 	 * The GameBoard class represents the current system of 
@@ -34,12 +36,19 @@ namespace game {
 			~GameBoard();
 
 			/**
+			 * Assignment operator
+			 * @param other The GameBoard to assign from
+			 */
+			GameBoard& operator=(const GameBoard& other);
+
+			/**
 			 * Changes the state of the cell at the specified coordinate.
 			 * A dead cell is changed to alive and alive cell is changed to dead.
 			 * A dead cell is represented as false and an alive cell is represented as true.
 			 * @param x The x-coordinate of the cell to be inverted.
 			 * @param y The y-coordinate of the cell to be inverted.
 			 * @return The state of the cell after the inverting of state.
+			 * @throw gameBoardOutOfBounds exception for indexes outside of the gameBoard.
 			 */
 			bool insertPoint(int x, int y);
 
@@ -58,6 +67,7 @@ namespace game {
 			 * @param x The x-coordinate of the cell.
 			 * @param y The y-coordinate of the cell.
 			 * @return The status of the cell. 
+			 * @throw gameBoardOutOfBounds exception for indexes outside of the gameBoard.
 			 */
 			bool getCell(int x, int y);
 
@@ -72,14 +82,15 @@ namespace game {
 			int getBoardWidth();
 
 		private:
-			int height;
-			int width;
+			int height = 0;
+			int width = 0;
 			bool** currGameState;
 			bool** nextGameState;
 
 			/**
 			 * Copies the other gameBoard's currGameState, height and width into current GameBoard.
 			 * @param other The gameBoard to copy from.
+			 * @return Pointer to new gameBoard
 			 */
 			void copyBoard(const GameBoard& other);
 
@@ -87,6 +98,48 @@ namespace game {
 			 * Clears the memory associated with the currGameState and nextGameState.
 			 */
 			void clearBoard();
+
+			/**
+			 * Generates the array which currGameState and nextGameState point to will all cells dead
+			 * @param width The width of the board to generate
+			 * @param height The height of the board to generate
+			 */
+			void generateBoardArray(int width, int height);
+
+			/**
+			 * Counts the number of alive neighbours surrounding the cell.
+			 * @param xCoord The x coordinate of the cell.
+			 * @param yCoord The y coordinate of the cell.
+			 * @return The number of alive cells surrounding the indexed cell
+			 * @throw gameBoardOutOfBounds exception for indexes outside of the gameBoard
+			 */
+			int aliveNeighbourCount(int x, int y);
+	};
+
+	class gameBoardOutOfBounds: public std::exception {
+		protected:
+			int inputX;
+			int inputY;
+			int line;
+
+		public:
+			gameBoardOutOfBounds(const int x, const int y, const int line) {
+				inputX = x;
+				inputY = y;
+				this->line = line;
+			}
+			int getInputX() {
+				return inputX;
+			}
+			int getInputY() {
+				return inputY;
+			}
+			int getLine() {
+				return line;
+			}
+			const char* what() const throw() {
+				return "gameBoardOutOfBounds Exception";
+			}
 	};
 }
 #endif
