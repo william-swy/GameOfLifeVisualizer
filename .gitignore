@@ -6,3 +6,5 @@ Debug/*
 GameOfLifeTests
 .vs
 .vscode
+.exe
+.o
