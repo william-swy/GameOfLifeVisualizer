@@ -1,10 +1,4 @@
-GameOfLife.sln
-*/Debug/*
-Debug/*
-*/*.vcxproj*
-*/pch*
-GameOfLifeTests
 .vs
 .vscode
-.exe
-.o
+*.exe
+*.o

@@ -1,6 +1,6 @@
 EXENAME = ./bin/gameOfLife
 EXETEST = ./bin/testGameBoard
-OBJS = main.o GameBoard.o
+OBJS = main.o gameBoard.o
 TESTOBJS = gameBoardTest.o gameBoard.o
 
 CXX = g++
@@ -23,4 +23,4 @@ gameBoard.o : ./source/source_BL/GameBoard.cpp ./include/GameBoard.h
 
 .PHONY : clean
 clean :
-	-rm -f *.o $(EXENAME)
+	-rm -f *.o ./bin/*
