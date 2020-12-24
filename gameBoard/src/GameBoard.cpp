@@ -1,41 +1,46 @@
 #include "GameBoard.h"
 
-game::GameBoard::GameBoard(int boardWidth, int boardHeight) {
+
+gameBoard::GameBoard::GameBoard(int boardWidth, int boardHeight) {
 	this->width = boardWidth;
 	this->height = boardHeight;
 	generateBoardArray(boardWidth, boardHeight);
 }
 
-game::GameBoard::GameBoard(const GameBoard &other) {
+gameBoard::GameBoard::GameBoard(const GameBoard &other) {
 	copyBoard(other);
 }
 
-game::GameBoard::~GameBoard() {
+gameBoard::GameBoard::~GameBoard() {
 	clearBoard();
 }
 
-game::GameBoard& game::GameBoard::operator=(const GameBoard& other) {
+gameBoard::GameBoard& gameBoard::GameBoard::operator=(const GameBoard& other) {
 	if (this != &other) {
 		clearBoard();
 		copyBoard(other);
 	}
 	return *this;
 }
-void game::GameBoard::nextState() {
-	for (int i = 0; i < width; i++) {
-		for (int j = 0; j < height; j++) {
-			int aliveNeighbours = aliveNeighbourCount(i, j);
-			if (getCell(i, j)) {
+void gameBoard::GameBoard::nextState() {
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			int aliveNeighbours = aliveNeighbourCount(j, i);
+			if (getCell(j, i)) {
 				// Alive cell with less than 2 neighbours dies from underpopulation. 
 				// Alive cell with more than 3 neighbours dies from overpopulation.
 				if ((aliveNeighbours < 2) || (aliveNeighbours > 3)) {
-					nextGameState[i][j] = false;
+					nextGameState[j][i] = false;
+				}
+				// Otherwise cell stays alive
+				else {
+					nextGameState[j][i] = true;
 				}
 			}
 			else {
 				// Dead cell with exactly 3 alive neigbours becomes alive.
 				if (aliveNeighbours == 3) {
-					nextGameState[i][j] = true;
+					nextGameState[j][i] = true;
 				}
 			}
 		}
@@ -46,7 +51,7 @@ void game::GameBoard::nextState() {
 	nextGameState = tmp;
 }
 
-bool game::GameBoard::insertPoint(int x, int y) {
+bool gameBoard::GameBoard::insertPoint(int x, int y) {
 	if (x < 0 || y < 0 || x >= width || y >= height) {
 		throw gameBoardOutOfBounds(x, y, __LINE__);
 	}
@@ -56,7 +61,7 @@ bool game::GameBoard::insertPoint(int x, int y) {
 	}
 }
 
-bool game::GameBoard::getCell(int x, int y) {
+bool gameBoard::GameBoard::getCell(int x, int y) {
 	if (x < 0 || y < 0 || x >= width || y >= height) {
 		throw gameBoardOutOfBounds(x, y, __LINE__);
 	}
@@ -65,21 +70,21 @@ bool game::GameBoard::getCell(int x, int y) {
 	}
 }
 
-int game::GameBoard::getBoardHeight() {
+int gameBoard::GameBoard::getBoardHeight() {
 	return height;
 }
 
-int game::GameBoard::getBoardWidth() {
+int gameBoard::GameBoard::getBoardWidth() {
 	return width;	
 }
 
-void game::GameBoard::copyBoard(const GameBoard &other) {
+void gameBoard::GameBoard::copyBoard(const GameBoard &other) {
 	width = other.width;
 	height = other.height;
 	generateBoardArray(other.width, other.height);
 }
 
-void game::GameBoard::clearBoard() {
+void gameBoard::GameBoard::clearBoard() {
 	for (int i = 0; i < width; i++) {
 		delete[] currGameState[i];
 		delete[] nextGameState[i];
@@ -88,7 +93,7 @@ void game::GameBoard::clearBoard() {
 	delete[] nextGameState;
 }
 
-void game::GameBoard::generateBoardArray(int boardWidth, int boardHeight) {
+void gameBoard::GameBoard::generateBoardArray(int boardWidth, int boardHeight) {
 	currGameState = new bool*[boardWidth];
 	nextGameState = new bool*[boardWidth];
 	for (int i = 0; i < boardWidth; i++) {
@@ -102,7 +107,7 @@ void game::GameBoard::generateBoardArray(int boardWidth, int boardHeight) {
 
 }
 
-int game::GameBoard::aliveNeighbourCount(int x, int y) {
+int gameBoard::GameBoard::aliveNeighbourCount(int x, int y) {
 	if (x < 0 || y < 0 || x >= width || y >= height) {
 		throw gameBoardOutOfBounds(x, y, __LINE__);
 	}
@@ -112,6 +117,10 @@ int game::GameBoard::aliveNeighbourCount(int x, int y) {
 			for (int j = -1; j <= 1; j++) {
 				try {
 					bool state = getCell(i + x, j + y);
+					// don't count the current cell
+					if ((i == 0) && (j == 0)) {
+						continue;
+					}
 					if (state) {
 						aliveNeighbours++;
 					}
@@ -121,8 +130,6 @@ int game::GameBoard::aliveNeighbourCount(int x, int y) {
 				}
 			}
 		}
-		// remove the cell itself from the aliveNeighbourCount
-		aliveNeighbours--;
 		return aliveNeighbours;
 	}
 }

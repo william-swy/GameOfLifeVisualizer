@@ -1,26 +1,44 @@
-EXENAME = ./bin/gameOfLife
-EXETEST = ./bin/testGameBoard
-OBJS = main.o gameBoard.o
-TESTOBJS = gameBoardTest.o gameBoard.o
+# Compiler and linker
+CXX := g++
 
-CXX = g++
-CXXFLAGS = -c -g -Wall -I ./include -I ./lib
+# Targets
+DEBUGEXE := gameOfLife
+TESTEXE	:= testGameBoard
 
-all : $(OBJS)
-	$(CXX) -o $(EXENAME) $(OBJS)
+# Directories
+BUILDDIR := bin
+INCDIR := lib
+BOARDDIR := gameBoard
+DISPLAYDIR := display
 
-test: $(TESTOBJS)
-	$(CXX) -o $(EXETEST) $(TESTOBJS)
+# Flags, Includes
+INC := -I $(INCDIR) -I $(BOARDDIR)
+CXXFLAGS = -std=c++11 -c -g -Wall -Wextra -pedantic -O0 $(INC)
 
-gameBoardTest.o : ./source/source_tests/GameBoardTest.cpp ./lib/catch.hpp
-	$(CXX) $(CXXFLAGS) ./source/source_tests/GameBoardTest.cpp
+TESTOBJS := $(addprefix $(BUILDDIR)/, GameBoard.o GameBoardTest.o)
+OBJS := $(addprefix $(BUILDDIR)/, GameBoard.o main.o)
 
-main.o : ./source/source_UI/main.cpp ./include/GameBoard.h
-	$(CXX) $(CXXFLAGS) ./source/source_UI/main.cpp
+all : $(DEBUGEXE) $(TESTEXE)
 
-gameBoard.o : ./source/source_BL/GameBoard.cpp ./include/GameBoard.h
-	$(CXX) $(CXXFLAGS) ./source/source_BL/GameBoard.cpp
+test : $(TESTEXE)
+
+debug : $(DEBUGEXE)
+
+$(DEBUGEXE) : $(OBJS)
+	$(CXX) -o $(BUILDDIR)/$(DEBUGEXE) $(OBJS)
+
+$(TESTEXE) : $(TESTOBJS)
+	$(CXX) -o $(BUILDDIR)/$(TESTEXE) $(TESTOBJS)
+
+$(BUILDDIR)/GameBoard.o : $(addprefix $(BOARDDIR)/, src/GameBoard.cpp GameBoard.h)
+	$(CXX) $(CXXFLAGS) $(BOARDDIR)/src/GameBoard.cpp -o $@
+
+$(BUILDDIR)/GameBoardTest.o : $(addprefix $(BOARDDIR)/, test/GameBoardTest.cpp GameBoard.h)
+	$(CXX) $(CXXFLAGS) $(BOARDDIR)/test/GameBoardTest.cpp -o $@
+
+$(BUILDDIR)/main.o : $(DISPLAYDIR)/main.cpp $(BOARDDIR)/GameBoard.h
+	$(CXX) $(CXXFLAGS) $(DISPLAYDIR)/main.cpp -o $@
 
 .PHONY : clean
 clean :
-	-rm -f *.o ./bin/*
+	-rm -f ./bin/*

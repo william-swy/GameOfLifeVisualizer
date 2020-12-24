@@ -4,7 +4,7 @@
 
 #include<exception>
 
-namespace game {
+namespace gameBoard {
 	/**
 	 * The GameBoard class represents the current system of 
 	 * Conway's Game of Life.
