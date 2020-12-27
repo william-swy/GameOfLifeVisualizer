@@ -1,10 +1,7 @@
-#define CATCH_CONFIG_MAIN
-
-#include <iostream>
+#include <catch2/catch.hpp>
 #include <utility>
 #include <vector>
-#include "catch.hpp"
-#include "GameBoard.h"
+#include "../GameOfLifeLogic/gameboard.h"
 
 
 static const int REPEATTIMES = 10;
@@ -41,7 +38,7 @@ bool checkBoardState(gameBoard::GameBoard &testBoard, std::vector<std::vector<bo
                 return false;
             }
         }
-    } 
+    }
     return true;
 }
 

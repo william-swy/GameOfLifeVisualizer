@@ -1,4 +1,8 @@
-.vs
-.vscode
+# IDE files
+.vscode/
+*.user
+
+# Build 
+build*/
 *.exe
 *.o
