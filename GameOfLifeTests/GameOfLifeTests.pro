@@ -5,6 +5,8 @@ CONFIG += console
 
 CONFIG += c++11
 
+INCLUDEPATH += ../GameOfLifeLogic
+
 isEmpty(CATCH_INCLUDE_DIR): CATCH_INCLUDE_DIR=$$(CATCH_INCLUDE_DIR)
 # set by Qt Creator wizard
 isEmpty(CATCH_INCLUDE_DIR): CATCH_INCLUDE_DIR="/usr/include"

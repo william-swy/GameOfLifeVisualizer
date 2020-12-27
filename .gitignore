@@ -1,6 +1,7 @@
 # IDE files
 .vscode/
 *.user
+.idea
 
 # Build 
 build*/

@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
 #include <utility>
 #include <vector>
-#include "../GameOfLifeLogic/gameboard.h"
+#include "gameboard.h"
 
 
 static const int REPEATTIMES = 10;
@@ -142,8 +142,10 @@ TEST_CASE("nextState dead wasteland", "[weight=1][part=gameBoard]")
         {0,0,0,0,0},
         {0,0,0,0,0}
     };
+    std::vector<int> generations = {0,1,2,3,4,5,6,7,8,9};
     gameBoard::GameBoard testBoard(5,5);
     for (int i = 0; i < REPEATTIMES; i++) {
+        REQUIRE(testBoard.getGenerationNumber() == generations[i]);
         testBoard.nextState();
         CHECK(checkBoardState(testBoard, expected));
     }
@@ -161,7 +163,9 @@ TEST_CASE("nextState underpopulation corner", "[weight=1][part=gameBoard]")
     gameBoard::GameBoard testBoard(5,5);
     testBoard.insertPoint(0,0);
     testBoard.insertPoint(0,1);
+    CHECK(testBoard.getGenerationNumber() == 0);
     testBoard.nextState();
+    CHECK(testBoard.getGenerationNumber() == 1);
     CHECK(checkBoardState(testBoard, expected));
 }
 
@@ -178,7 +182,9 @@ TEST_CASE("nextState population growth", "[weight=1][part=gameBoard]")
     testBoard.insertPoint(2,2);
     testBoard.insertPoint(3,2);
     testBoard.insertPoint(2,3);
+    CHECK(testBoard.getGenerationNumber() == 0);
     testBoard.nextState();
+    CHECK(testBoard.getGenerationNumber() == 1);
     CHECK(checkBoardState(testBoard, expected));
 }
 
@@ -197,7 +203,9 @@ TEST_CASE("nextState underpopulation corner with growth", "[weight=1][part=gameB
     testBoard.insertPoint(2,2);
     testBoard.insertPoint(3,2);
     testBoard.insertPoint(2,3);
+    CHECK(testBoard.getGenerationNumber() == 0);
     testBoard.nextState();
+    CHECK(testBoard.getGenerationNumber() == 1);
     CHECK(checkBoardState(testBoard, expected));
 }
 
@@ -210,12 +218,14 @@ TEST_CASE("nextState still life", "[weight=1][part=gameBoard]")
         {0,0,1,1,0},
         {0,0,0,0,0}
     };
+    std::vector<int> generations = {0,1,2,3,4,5,6,7,8,9};
     gameBoard::GameBoard testBoard(5,5);
     testBoard.insertPoint(2,2);
     testBoard.insertPoint(3,2);
     testBoard.insertPoint(2,3);
     testBoard.insertPoint(3,3);
     for (int i = 0; i < REPEATTIMES; i++) {
+        CHECK(testBoard.getGenerationNumber() == generations[i]);
         testBoard.nextState();
         CHECK(checkBoardState(testBoard, expected));
     }
@@ -237,11 +247,13 @@ TEST_CASE("nextState oscillator", "[weight=1][part=gameboard]")
         {0,0,1,0,0},
         {0,0,0,0,0}
     };
+    std::vector<int> generations = {0,1,2,3,4,5,6,7,8,9};
     gameBoard::GameBoard testBoard(5,5);
     testBoard.insertPoint(2,1);
     testBoard.insertPoint(2,2);
     testBoard.insertPoint(2,3);
     for (int i = 0; i < REPEATTIMES; i++) {
+        CHECK(testBoard.getGenerationNumber() == generations[i]);
         testBoard.nextState();
         if (i % 2 == 0) {
             CHECK(checkBoardState(testBoard, expectedEven));

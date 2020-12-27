@@ -4,6 +4,7 @@
 gameBoard::GameBoard::GameBoard(int boardWidth, int boardHeight) {
     this->width = boardWidth;
     this->height = boardHeight;
+    this->generationNumber = 0;
     generateBoardArray(boardWidth, boardHeight);
 }
 
@@ -49,6 +50,9 @@ void gameBoard::GameBoard::nextState() {
     bool** tmp = currGameState;
     currGameState = nextGameState;
     nextGameState = tmp;
+
+    // advance generation number
+    this->generationNumber++;
 }
 
 bool gameBoard::GameBoard::insertPoint(int x, int y) {
@@ -76,6 +80,10 @@ int gameBoard::GameBoard::getBoardHeight() {
 
 int gameBoard::GameBoard::getBoardWidth() {
     return width;
+}
+
+int gameBoard::GameBoard::getGenerationNumber() {
+    return generationNumber;
 }
 
 void gameBoard::GameBoard::copyBoard(const GameBoard &other) {

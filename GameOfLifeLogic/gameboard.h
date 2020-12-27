@@ -19,7 +19,7 @@ namespace gameBoard {
             GameBoard();
 
             /**
-             * Constructor to create a game board of specified widith and height
+             * Constructor to create a game board of specified width and height
              * that has all dead cells.
              * @param width The width of the board.
              * @param height The height of the game board.
@@ -59,6 +59,7 @@ namespace gameBoard {
              * 		alive cells with less than 2 or greater than 3 neighbours dies.
              * 		alive cells with exactly 2 or 3 neighbours remain alive.
              * 		dead cells with exactly 3 neighbours become an alive cell.
+             * Increases generation number by 1
              */
             void nextState();
 
@@ -82,11 +83,17 @@ namespace gameBoard {
              */
             int getBoardWidth();
 
+            /**
+             * @return The generation number of the current cell state
+             */
+            int getGenerationNumber();
+
         private:
             int height = 0;
             int width = 0;
             bool** currGameState;
             bool** nextGameState;
+            int generationNumber;
 
             /**
              * Copies the other gameBoard's currGameState, height and width into current GameBoard.
