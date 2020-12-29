@@ -24,10 +24,10 @@ private slots:
     // run menu options
     void stepForward();
     void run();
-    //void stop();
-    //void increaseSpeed();
-    //void decreaseSpeed();
-    //void resetSpeed();
+    void stop();
+    void increaseSpeed();
+    void decreaseSpeed();
+    void resetSpeed();
 
 signals:
     // resets the zoom level to default
@@ -39,18 +39,26 @@ signals:
 
 private slots:
     void updateCellInfo(int x, int y);
+    void increaseBoardGeneration();
 
 private:
     Ui::Board_Ui* ui;
     View *view;
     QGraphicsScene *scene;
     gameBoard::GameBoard* board;
-    bool isRunning = false;
+    QTimer* timer;
+    int delayTime = 1000;
+    int currDelayTime = delayTime;
+    int minDelayTime = 125;
+    int maxDelayTime = 8000;
+    int timeFactor = 2;
 
     void connectAllSlots();
     void setupScene();
     // Generates the initial cells at default zoom level
     void populateScene();
+    // checks if run speed can be changed. If it enables them
+    void changeSpeedOptions();
 };
 
 #endif // DISPLAYWINDOW_H

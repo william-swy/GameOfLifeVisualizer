@@ -1,8 +1,8 @@
 #include <QApplication>
+#include <QTimer>
 #include "displaywindow.h"
 #include "board_ui.h"
 #include "cell.h"
-#include <iostream>
 
 const int SIZE = 10;
 const int CELLNUM = 100;
@@ -57,30 +57,48 @@ void DisplayWindow::stepForward()
     emit boardChanged(board);
 }
 
-/*void DisplayWindow::run()
+void DisplayWindow::run()
 {
-    return;
+    ui->stop->setEnabled(true);
+    ui->run->setEnabled(false);
+    ui->increaseSpeed->setEnabled(false);
+    ui->decreaseSpeed->setEnabled(false);
+    ui->resetSpeed->setEnabled(false);
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(increaseBoardGeneration()));
+    timer->start(currDelayTime);
 }
 
 void DisplayWindow::stop()
 {
-    return;
+    timer->stop();
+    delete timer;
+    ui->run->setEnabled(true);
+    ui->stop->setEnabled(false);
+    changeSpeedOptions();
 }
 
 void DisplayWindow::increaseSpeed()
 {
-    return;
+    if (currDelayTime > minDelayTime) {
+        currDelayTime /= timeFactor;
+        changeSpeedOptions();
+    }
 }
 
 void DisplayWindow::decreaseSpeed()
 {
-    return;
+    if (currDelayTime < maxDelayTime) {
+        currDelayTime *= timeFactor;
+        changeSpeedOptions();;
+    }
 }
 
 void DisplayWindow::resetSpeed()
 {
-    return;
-}*/
+    currDelayTime = delayTime;
+    changeSpeedOptions();
+}
 
 void DisplayWindow::connectAllSlots()
 {
@@ -95,11 +113,11 @@ void DisplayWindow::connectAllSlots()
 
     // run menu dropdown actions
     connect(ui->step, SIGNAL(triggered()), this, SLOT(stepForward()));
-    //connect(ui->run, SIGNAL(triggered()), this, SLOT(run()));
-    //connect(ui->stop, SIGNAL(triggered()), this, SLOT(stop()));
-    //connect(ui->increaseSpeed, SIGNAL(triggered()), this, SLOT(increaseSpeed()));
-    //connect(ui->decreaseSpeed, SIGNAL(triggered()), this, SLOT(decreaseSpeed()));
-    //connect(ui->resetSpeed, SIGNAL(triggered()), this, SLOT(resetSpeed()));
+    connect(ui->run, SIGNAL(triggered()), this, SLOT(run()));
+    connect(ui->stop, SIGNAL(triggered()), this, SLOT(stop()));
+    connect(ui->increaseSpeed, SIGNAL(triggered()), this, SLOT(increaseSpeed()));
+    connect(ui->decreaseSpeed, SIGNAL(triggered()), this, SLOT(decreaseSpeed()));
+    connect(ui->resetSpeed, SIGNAL(triggered()), this, SLOT(resetSpeed()));
 }
 
 void DisplayWindow::updateCellInfo(int x, int y)
@@ -124,4 +142,26 @@ void DisplayWindow::populateScene()
         x = 0;
         y++;
     }
+}
+
+void DisplayWindow::increaseBoardGeneration()
+{
+    stepForward();
+}
+
+void DisplayWindow::changeSpeedOptions()
+{
+    if (currDelayTime == minDelayTime) {
+        ui->increaseSpeed->setEnabled(false);
+        ui->decreaseSpeed->setEnabled(true);
+    }
+    else if(currDelayTime == maxDelayTime) {
+        ui->increaseSpeed->setEnabled(true);
+        ui->decreaseSpeed->setEnabled(false);
+    }
+    else {
+        ui->increaseSpeed->setEnabled(true);
+        ui->decreaseSpeed->setEnabled(true);
+    }
+    ui->resetSpeed->setEnabled(true);
 }
