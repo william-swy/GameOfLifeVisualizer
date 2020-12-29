@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include "board_ui.h"
+#include "cell.h"
+#include "view.h"
 #include "gameboard.h"
 
 class DisplayWindow : public QMainWindow
@@ -16,29 +18,36 @@ public:
 private slots:
     // file menu options
     void newGameBoard();
-    void openFile();
-    void saveState();
     void exitApp();
 
-    // view menu options
-    void zoomIn();
-    void zoomOut();
-    void resetZoom();
-
     // run menu options
-    void stepForward();
-    void run();
-    void stop();
-    void increaseSpeed();
-    void decreaseSpeed();
-    void resetSpeed();
+    //void stepForward();
+    //void run();
+    //void stop();
+    //void increaseSpeed();
+    //void decreaseSpeed();
+    //void resetSpeed();
+
+signals:
+    // resets the zoom level to default
+    void resetBoardZoom();
+    //void resetCells();
+    //void boardChanged(gameBoard::GameBoard* board);
+
+//private slots:
+//    void updateCellInfo(int x, int y);
 
 private:
     Ui::Board_Ui* ui;
+    View *view;
     QGraphicsScene *scene;
     gameBoard::GameBoard* board;
+    bool isRunning;
+    Cell** allCells;
 
     void connectAllSlots();
+    void setupScene();
+    // Generates the initial cells at default zoom level
     void populateScene();
 };
 

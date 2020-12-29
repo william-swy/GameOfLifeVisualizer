@@ -1,21 +1,12 @@
-/********************************************************************************
-** Form generated from reading UI file 'mainwindow.ui'
-**
-** Created by: Qt User Interface Compiler version 5.15.2
-**
-** WARNING! All changes made in this file will be lost when recompiling UI file!
-********************************************************************************/
+// GUI layout for application
 
 #ifndef BOARD_UI_H
 #define BOARD_UI_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QWidget>
+#include <QAction>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
 
 const int INITWIDTH = 800;
 const int INITHEIGHT = 600;
@@ -23,28 +14,24 @@ const int INITHEIGHT = 600;
 namespace Ui {
     class Board_Ui {
     public:
-        QWidget* centralwidget;
-
         // menu bar
         QMenuBar *menubar;
 
         // menu bar tabs
         QMenu *menuFile, *menuView, *menuRun;
 
-        QStatusBar* statusbar;
-
         // actions under file menu tab
-        QAction *newBoard, *open, *save, *quit;
+        QAction *newBoard, *quit;
 
         // actions under view menu tab
-        QAction *zoomIn, *zoomOut, *resetZoom;
+        QAction *resetZoom;
 
         // actions under run menu tab
         QAction *step, *run, *stop, *increaseSpeed, *decreaseSpeed, *resetSpeed;
 
         // set up determined settings for UI objects
         void setupUi(QMainWindow* MainWindow) {
-            MainWindow->resize(INITWIDTH, INITHEIGHT);
+            MainWindow->showMaximized();
             createActions(MainWindow);
             createActionShortcuts();
             createMenus(MainWindow);
@@ -56,13 +43,9 @@ namespace Ui {
         {
             // create file menu tab actions
             newBoard        = new QAction(MainWindow);
-            open            = new QAction(MainWindow);
-            save            = new QAction(MainWindow);
             quit            = new QAction(MainWindow);
 
             // create view menu tab actions
-            zoomIn          = new QAction(MainWindow);
-            zoomOut         = new QAction(MainWindow);
             resetZoom       = new QAction(MainWindow);
 
             // create run menu tab options
@@ -93,13 +76,9 @@ namespace Ui {
 
             // add file menu tab actions
             menuFile->addAction(newBoard);
-            menuFile->addAction(open);
-            menuFile->addAction(save);
             menuFile->addAction(quit);
 
             // add view menu tab actions
-            menuView->addAction(zoomIn);
-            menuView->addAction(zoomOut);
             menuView->addAction(resetZoom);
 
             // add run menu tab actions
@@ -123,13 +102,9 @@ namespace Ui {
 
             // file menu action titles
             newBoard->setText(QMainWindow::tr("New Board"));
-            open->setText(QMainWindow::tr("Open"));
-            save->setText(QMainWindow::tr("Save"));
             quit->setText(QMainWindow::tr("Quit"));
 
             // view menu action titles
-            zoomIn->setText(QMainWindow::tr("Zoom In"));
-            zoomOut->setText(QMainWindow::tr("Zoom Out"));
             resetZoom->setText(QMainWindow::tr("Reset Zoom"));
 
             // run menu action titles
@@ -145,13 +120,7 @@ namespace Ui {
         void createActionShortcuts() {
             #if QT_CONFIG(shortcut)
                 // file menu action shortcuts
-                open->setShortcut(QMainWindow::tr("Ctrl+O"));
-                save->setShortcut(QMainWindow::tr("Ctrl+S"));
                 quit->setShortcut(QMainWindow::tr("Ctrl+Q"));
-
-                // view menu action shortcuts
-                zoomIn->setShortcut(QMainWindow::tr("Ctrl+="));
-                zoomOut->setShortcut(QMainWindow::tr("Ctrl+-"));
 
                 // run menu action shortcuts
                 step->setShortcut(QMainWindow::tr("Ctrl+N"));
