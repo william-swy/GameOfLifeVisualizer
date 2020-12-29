@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(GameOfLifeTests)
+project(GameOfLifeTests LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,10 +10,10 @@ set(SOURCES main.cpp tst_gameboardtest.cpp ${LOGIC_DIR}/gameboard.cpp)
 find_package(Catch2 REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(../GameOfLifeLogic)
+include_directories(${LOGIC_DIR})
 
 
-# ENSURE THERE IS NO IN SOURCE BUILD
+# ENSURE THERE IS NO IN-SOURCE BUILD
 MACRO(ENSURE_OUT_OF_SOURCE_BUILD MSG)
     STRING(COMPARE EQUAL "${CMAKE_SOURCE_DIR}"
             "${CMAKE_BINARY_DIR}" insource)

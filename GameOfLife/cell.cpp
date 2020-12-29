@@ -3,7 +3,7 @@
 
 //Cell::Cell(QGraphicsItem *parent) : QGraphicsObject(parent) {}
 
-Cell::Cell(int x, int y, int size)
+Cell::Cell(int x, int y, int size, QGraphicsItem* parent) : QGraphicsObject(parent)
 {
     this->xCoord = x;
     this->yCoord = y;
@@ -41,11 +41,21 @@ void Cell::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     Q_UNUSED(event);
     alive = !alive;
     update();
+    emit cellChanged(xCoord, yCoord);
 }
 
-void Cell::changeStatus(bool status) {
-    if (status != alive) {
-        alive = status;
+void Cell::resetCell()
+{
+    if (alive) {
+        alive = false;
+        update();
+    }
+}
+
+void Cell::updateCell(gameBoard::GameBoard* board)
+{
+    if (alive != board->getCell(xCoord, yCoord)) {
+        alive = !alive;
         update();
     }
 }

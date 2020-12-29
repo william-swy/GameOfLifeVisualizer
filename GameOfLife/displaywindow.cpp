@@ -2,14 +2,16 @@
 #include "displaywindow.h"
 #include "board_ui.h"
 #include "cell.h"
+#include <iostream>
 
 const int SIZE = 10;
 const int CELLNUM = 100;
+const int TOTALCELLS = 2*CELLNUM;
 const int TOTALWIDTH = CELLNUM*SIZE;
 
 DisplayWindow::DisplayWindow(QWidget *parent) : QMainWindow(parent)
     ,ui(new Ui::Board_Ui), view(new View(this))
-    ,board(new gameBoard::GameBoard(SIZE,SIZE)),
+    ,board(new gameBoard::GameBoard(TOTALCELLS, TOTALCELLS)),
     scene(new QGraphicsScene(this))
 {
     ui->setupUi(this);
@@ -38,9 +40,10 @@ void DisplayWindow::newGameBoard()
     if(board) {
         delete board;
     }
-    board = new gameBoard::GameBoard(CELLNUM,CELLNUM);
-    //emit resetCells();
+    board = new gameBoard::GameBoard(TOTALCELLS,TOTALCELLS);
+
     emit resetBoardZoom();
+    emit resetAllCells();
 }
 
 void DisplayWindow::exitApp()
@@ -48,13 +51,13 @@ void DisplayWindow::exitApp()
     QApplication::quit();
 }
 
-/*void DisplayWindow::stepForward()
+void DisplayWindow::stepForward()
 {
     board->nextState();
     emit boardChanged(board);
 }
 
-void DisplayWindow::run()
+/*void DisplayWindow::run()
 {
     return;
 }
@@ -91,7 +94,7 @@ void DisplayWindow::connectAllSlots()
     connect(ui->resetZoom, SIGNAL(triggered()), this->view, SLOT(resetZoom()));
 
     // run menu dropdown actions
-    //connect(ui->step, SIGNAL(triggered()), this, SLOT(stepForward()));
+    connect(ui->step, SIGNAL(triggered()), this, SLOT(stepForward()));
     //connect(ui->run, SIGNAL(triggered()), this, SLOT(run()));
     //connect(ui->stop, SIGNAL(triggered()), this, SLOT(stop()));
     //connect(ui->increaseSpeed, SIGNAL(triggered()), this, SLOT(increaseSpeed()));
@@ -99,11 +102,11 @@ void DisplayWindow::connectAllSlots()
     //connect(ui->resetSpeed, SIGNAL(triggered()), this, SLOT(resetSpeed()));
 }
 
-/*void DisplayWindow::updateCellInfo(int x, int y)
+void DisplayWindow::updateCellInfo(int x, int y)
 {
     board->insertPoint(x,y);
 }
-*/
+
 void DisplayWindow::populateScene()
 {
     int x = 0;
@@ -111,9 +114,9 @@ void DisplayWindow::populateScene()
     for (int i = -TOTALWIDTH; i < TOTALWIDTH; i+=SIZE) {
         for (int j = -TOTALWIDTH; j < TOTALWIDTH; j+=SIZE) {
             Cell *cell= new Cell(x, y, SIZE);
-            //connect(this, SIGNAL(resetCells()), cell, SLOT(resetCell()));
-            //connect(cell, SIGNAL(cellChanged(int,int)), this, SLOT(updateCellInfo(int,int)));
-            //connect(this, SIGNAL(boardChanged(gameBoard::GameBoard*)), cell, SLOT(updateCell(gameBoard::GameBoard*)));
+            connect(this, SIGNAL(resetAllCells()), cell, SLOT(resetCell()));
+            connect(cell, SIGNAL(cellChanged(int,int)), this, SLOT(updateCellInfo(int,int)));
+            connect(this, SIGNAL(boardChanged(gameBoard::GameBoard*)), cell, SLOT(updateCell(gameBoard::GameBoard*)));
             cell->setPos(QPointF(i ,j));
             scene->addItem(cell);
             x++;

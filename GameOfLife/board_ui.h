@@ -8,8 +8,8 @@
 #include <QMenu>
 #include <QMenuBar>
 
-const int INITWIDTH = 800;
-const int INITHEIGHT = 600;
+const int INIT_WIDTH = 800;
+const int INIT_HEIGHT = 600;
 
 namespace Ui {
     class Board_Ui {
@@ -36,6 +36,9 @@ namespace Ui {
             createActionShortcuts();
             createMenus(MainWindow);
             setTitles(MainWindow);
+
+            // initially set stop to disabled. Enable only if gameBoard is running
+            stop->setEnabled(false);
         }
 
         // initialize menu drop down actions
@@ -61,7 +64,7 @@ namespace Ui {
         void createMenus(QMainWindow* MainWindow)
         {
             menubar = new QMenuBar(MainWindow);
-            menubar->setGeometry(QRect(0, 0, INITWIDTH, INITHEIGHT/24));
+            menubar->setGeometry(QRect(0, 0, INIT_WIDTH, INIT_HEIGHT/24));
 
             menuFile = new QMenu(menubar);
             menuView = new QMenu(menubar);

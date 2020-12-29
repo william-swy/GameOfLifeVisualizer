@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QTimer>
 #include "board_ui.h"
 #include "cell.h"
 #include "view.h"
@@ -21,8 +22,8 @@ private slots:
     void exitApp();
 
     // run menu options
-    //void stepForward();
-    //void run();
+    void stepForward();
+    void run();
     //void stop();
     //void increaseSpeed();
     //void decreaseSpeed();
@@ -31,19 +32,20 @@ private slots:
 signals:
     // resets the zoom level to default
     void resetBoardZoom();
-    //void resetCells();
-    //void boardChanged(gameBoard::GameBoard* board);
+    // resets all cells to dead
+    void resetAllCells();
+    // signals all cells that board has changed, update if necessary
+    void boardChanged(gameBoard::GameBoard* board);
 
-//private slots:
-//    void updateCellInfo(int x, int y);
+private slots:
+    void updateCellInfo(int x, int y);
 
 private:
     Ui::Board_Ui* ui;
     View *view;
     QGraphicsScene *scene;
     gameBoard::GameBoard* board;
-    bool isRunning;
-    Cell** allCells;
+    bool isRunning = false;
 
     void connectAllSlots();
     void setupScene();

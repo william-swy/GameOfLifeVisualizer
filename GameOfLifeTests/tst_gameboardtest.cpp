@@ -4,7 +4,7 @@
 #include "gameboard.h"
 
 
-static const int REPEATTIMES = 10;
+const int REPEATTIMES = 10;
 
 /**
  * Returns true if all cells in the board have the state false

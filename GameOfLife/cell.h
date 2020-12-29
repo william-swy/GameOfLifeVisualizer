@@ -5,15 +5,23 @@
 #define CELL_H
 
 #include <QPainter>
+#include <QGraphicsObject>
 #include <QGraphicsItem>
+#include "gameboard.h"
 
-class Cell : public QGraphicsItem {
-
+class Cell : public QGraphicsObject {
+    Q_OBJECT
 public:
-    Cell(int x, int y, int size);
+    Cell(int x, int y, int size, QGraphicsItem* parent = nullptr);
     QRectF boundingRect() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
-    void changeStatus(bool status);
+
+public slots:
+    void resetCell();
+    void updateCell(gameBoard::GameBoard* board);
+
+signals:
+    void cellChanged(int x, int y);
 
 protected:
     //void advance(int phase) override;
