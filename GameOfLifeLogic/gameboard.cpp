@@ -43,6 +43,10 @@ void gameBoard::GameBoard::nextState() {
                 if (aliveNeighbours == 3) {
                     nextGameState[j][i] = true;
                 }
+                // Otherwise cell stays dead
+                else {
+                    nextGameState[j][i] = false;
+                }
             }
         }
     }

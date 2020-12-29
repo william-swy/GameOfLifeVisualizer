@@ -4,7 +4,7 @@
 #include "gameboard.h"
 
 
-const int REPEATTIMES = 10;
+const int REPEAT_TIMES = 10;
 
 /**
  * Returns true if all cells in the board have the state false
@@ -113,7 +113,7 @@ TEST_CASE("insertPoint many in bounds", "[weight=1][part=gameBoard]")
             REQUIRE(testBoard.getCell(point.first, point.second) == true);
         }
         catch(const gameBoard::gameBoardOutOfBounds &e) {
-            FAIL_CHECK("gameBoardOutOfBounds exeception should not have been thrown");
+            FAIL_CHECK("gameBoardOutOfBounds exception should not have been thrown");
         }
     }
 }
@@ -125,7 +125,7 @@ TEST_CASE("insertPoint many out of bounds", "[weight=1][part=gameBoard]")
     for (std::pair<int, int> &point : badPoints) {
         try {
             testBoard.insertPoint(point.first, point.second);
-            FAIL_CHECK("gameBoardOutOfBounds exeception should have been thrown");
+            FAIL_CHECK("gameBoardOutOfBounds exception should have been thrown");
         }
         catch (const gameBoard::gameBoardOutOfBounds &e) {
             SUCCEED("gameBoardOutOfBounds exception thrown");
@@ -144,7 +144,7 @@ TEST_CASE("nextState dead wasteland", "[weight=1][part=gameBoard]")
     };
     std::vector<int> generations = {0,1,2,3,4,5,6,7,8,9};
     gameBoard::GameBoard testBoard(5,5);
-    for (int i = 0; i < REPEATTIMES; i++) {
+    for (int i = 0; i < REPEAT_TIMES; i++) {
         REQUIRE(testBoard.getGenerationNumber() == generations[i]);
         testBoard.nextState();
         CHECK(checkBoardState(testBoard, expected));
@@ -167,6 +167,25 @@ TEST_CASE("nextState underpopulation corner", "[weight=1][part=gameBoard]")
     testBoard.nextState();
     CHECK(testBoard.getGenerationNumber() == 1);
     CHECK(checkBoardState(testBoard, expected));
+}
+
+TEST_CASE("nextState dead cells stay dead", "[weight=1][part=gameBoard]")
+{
+    std::vector<std::vector<bool>> expected = {
+            {0,0,0,0,0},
+            {0,0,0,0,0},
+            {0,0,0,0,0},
+            {0,0,0,0,0},
+            {0,0,0,0,0}
+    };
+    gameBoard::GameBoard testBoard(5,5);
+    testBoard.insertPoint(3,3);
+    CHECK(testBoard.getGenerationNumber() == 0);
+    for (int i = 0; i < REPEAT_TIMES; i++) {
+        CHECK(testBoard.getGenerationNumber() == i);
+        testBoard.nextState();
+        CHECK(checkBoardState(testBoard, expected));
+    }
 }
 
 TEST_CASE("nextState population growth", "[weight=1][part=gameBoard]")
@@ -224,14 +243,14 @@ TEST_CASE("nextState still life", "[weight=1][part=gameBoard]")
     testBoard.insertPoint(3,2);
     testBoard.insertPoint(2,3);
     testBoard.insertPoint(3,3);
-    for (int i = 0; i < REPEATTIMES; i++) {
+    for (int i = 0; i < REPEAT_TIMES; i++) {
         CHECK(testBoard.getGenerationNumber() == generations[i]);
         testBoard.nextState();
         CHECK(checkBoardState(testBoard, expected));
     }
 }
 
-TEST_CASE("nextState oscillator", "[weight=1][part=gameboard]")
+TEST_CASE("nextState oscillator", "[weight=1][part=gameBoard]")
 {
     std::vector<std::vector<bool>> expectedEven = {
         {0,0,0,0,0},
@@ -252,7 +271,7 @@ TEST_CASE("nextState oscillator", "[weight=1][part=gameboard]")
     testBoard.insertPoint(2,1);
     testBoard.insertPoint(2,2);
     testBoard.insertPoint(2,3);
-    for (int i = 0; i < REPEATTIMES; i++) {
+    for (int i = 0; i < REPEAT_TIMES; i++) {
         CHECK(testBoard.getGenerationNumber() == generations[i]);
         testBoard.nextState();
         if (i % 2 == 0) {
