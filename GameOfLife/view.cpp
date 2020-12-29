@@ -11,10 +11,8 @@ View::View(QWidget *parent) : QGraphicsView(parent)
     double initZoom = qPow(scaleFactor, maxZoomInTimes+1);
     scale(initZoom, initZoom);
     setRenderHint(QPainter::Antialiasing);
-    //setDragMode(QGraphicsView::ScrollHandDrag);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 }
 
 void View::wheelEvent(QWheelEvent *event)

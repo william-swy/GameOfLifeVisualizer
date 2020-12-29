@@ -59,6 +59,8 @@ private:
     void populateScene();
     // checks if run speed can be changed. If it enables them
     void changeSpeedOptions();
+    // Updates status bar with current generation number
+    void updateStatusBar();
 };
 
 #endif // DISPLAYWINDOW_H

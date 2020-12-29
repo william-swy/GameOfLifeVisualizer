@@ -4,9 +4,11 @@
 #define BOARD_UI_H
 
 #include <QAction>
+#include <QLabel>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
+#include <QStatusBar>
 
 const int INIT_WIDTH = 800;
 const int INIT_HEIGHT = 600;
@@ -29,6 +31,10 @@ namespace Ui {
         // actions under run menu tab
         QAction *step, *run, *stop, *increaseSpeed, *decreaseSpeed, *resetSpeed;
 
+        // status bar and it's widgets
+        QStatusBar *statusBar;
+        QLabel* display;
+
         // set up determined settings for UI objects
         void setupUi(QMainWindow* MainWindow) {
             MainWindow->showMaximized();
@@ -39,6 +45,12 @@ namespace Ui {
 
             // initially set stop to disabled. Enable only if gameBoard is running
             stop->setEnabled(false);
+
+            // status bar set up
+            statusBar = new QStatusBar(MainWindow);
+            display = new QLabel();
+            statusBar->addPermanentWidget(display);
+            MainWindow->setStatusBar(statusBar);
         }
 
         // initialize menu drop down actions

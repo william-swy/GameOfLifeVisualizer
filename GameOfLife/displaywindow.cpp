@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QString>
 #include <QTimer>
 #include "displaywindow.h"
 #include "board_ui.h"
@@ -18,6 +19,7 @@ DisplayWindow::DisplayWindow(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(this->view);
     setupScene();
     connectAllSlots();
+    updateStatusBar();
 }
 
 DisplayWindow::~DisplayWindow()
@@ -44,6 +46,7 @@ void DisplayWindow::newGameBoard()
 
     emit resetBoardZoom();
     emit resetAllCells();
+    updateStatusBar();
 }
 
 void DisplayWindow::exitApp()
@@ -55,6 +58,7 @@ void DisplayWindow::stepForward()
 {
     board->nextState();
     emit boardChanged(board);
+    updateStatusBar();
 }
 
 void DisplayWindow::run()
@@ -164,4 +168,10 @@ void DisplayWindow::changeSpeedOptions()
         ui->decreaseSpeed->setEnabled(true);
     }
     ui->resetSpeed->setEnabled(true);
+}
+
+void DisplayWindow::updateStatusBar()
+{
+    QString num = QString::number(board->getGenerationNumber());
+    ui->display->setText("Generation number: " + num);
 }
