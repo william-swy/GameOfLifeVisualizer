@@ -1,5 +1,4 @@
 #include <QApplication>
-
 #include "displaywindow.h"
 
 int main(int argc, char *argv[])

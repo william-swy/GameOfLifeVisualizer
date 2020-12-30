@@ -1,28 +1,11 @@
-cmake_minimum_required(VERSION 3.5)
-
-project(GameOfLifeLogic LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(SOURCES main.cpp gameboard.cpp)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+### Build for gameBoard logic and representation library
 
 
-# ENSURE THERE IS NO IN-SOURCE BUILD
-MACRO(ENSURE_OUT_OF_SOURCE_BUILD MSG)
-    STRING(COMPARE EQUAL "${CMAKE_SOURCE_DIR}"
-            "${CMAKE_BINARY_DIR}" insource)
-    GET_FILENAME_COMPONENT(PARENTDIR ${CMAKE_SOURCE_DIR} PATH)
-    STRING(COMPARE EQUAL "${CMAKE_SOURCE_DIR}"
-            "${PARENTDIR}" insourcesubdir)
-    IF(insource OR insourcesubdir)
-        MESSAGE(FATAL_ERROR "${MSG}")
-    ENDIF(insource OR insourcesubdir)
-ENDMACRO()
+set(LIB_NAME gameboard_library)
+set(HEADERS gameboard.h)
+set(SOURCES gameboard.cpp)
 
-ENSURE_OUT_OF_SOURCE_BUILD( "${CMAKE_PROJECT_NAME} requires an out of source build.")
+add_library(${LIB_NAME} ${SOURCES} ${HEADERS})
 
-
-add_executable(${PROJECT_NAME} ${SOURCES})
+target_compile_features(${LIB_NAME} PUBLIC cxx_std_11)
 

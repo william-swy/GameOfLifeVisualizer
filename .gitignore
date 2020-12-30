@@ -4,6 +4,6 @@
 .idea
 
 # Build 
-build*/
+*build*/
 *.exe
 *.o

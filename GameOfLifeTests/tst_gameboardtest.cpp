@@ -1,8 +1,9 @@
+#define CATCH_CONFIG_MAIN
+
 #include <catch2/catch.hpp>
 #include <utility>
 #include <vector>
 #include "gameboard.h"
-
 
 const int REPEAT_TIMES = 10;
 

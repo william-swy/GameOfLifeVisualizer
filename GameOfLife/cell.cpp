@@ -1,7 +1,6 @@
 #include "cell.h"
 #include "gameboard.h"
 
-//Cell::Cell(QGraphicsItem *parent) : QGraphicsObject(parent) {}
 
 Cell::Cell(int x, int y, int size, QGraphicsItem* parent) : QGraphicsObject(parent)
 {

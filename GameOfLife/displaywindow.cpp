@@ -6,13 +6,13 @@
 #include "cell.h"
 
 const int SIZE = 10;
-const int CELLNUM = 100;
-const int TOTALCELLS = 2*CELLNUM;
-const int TOTALWIDTH = CELLNUM*SIZE;
+const int CELL_NUM = 100;
+const int TOTAL_CELLS = 2 * CELL_NUM;
+const int TOTAL_WIDTH = CELL_NUM * SIZE;
 
 DisplayWindow::DisplayWindow(QWidget *parent) : QMainWindow(parent)
     ,ui(new Ui::Board_Ui), view(new View(this))
-    ,board(new gameBoard::GameBoard(TOTALCELLS, TOTALCELLS)),
+    ,board(new gameBoard::GameBoard(TOTAL_CELLS, TOTAL_CELLS)),
     scene(new QGraphicsScene(this))
 {
     ui->setupUi(this);
@@ -33,16 +33,14 @@ void DisplayWindow::setupScene()
 {
     scene = new QGraphicsScene(this);
     view->setScene(scene);
-    scene->setSceneRect(-TOTALWIDTH, -TOTALWIDTH, 2*(TOTALWIDTH-CELLNUM), 2*(TOTALWIDTH-CELLNUM));
+    scene->setSceneRect(-TOTAL_WIDTH, -TOTAL_WIDTH, 2 * (TOTAL_WIDTH - CELL_NUM), 2 * (TOTAL_WIDTH - CELL_NUM));
     populateScene();
 }
 
 void DisplayWindow::newGameBoard()
 {
-    if(board) {
-        delete board;
-    }
-    board = new gameBoard::GameBoard(TOTALCELLS,TOTALCELLS);
+    delete board;
+    board = new gameBoard::GameBoard(TOTAL_CELLS, TOTAL_CELLS);
 
     emit resetBoardZoom();
     emit resetAllCells();
@@ -63,6 +61,7 @@ void DisplayWindow::stepForward()
 
 void DisplayWindow::run()
 {
+    ui->newBoard->setEnabled(false);
     ui->stop->setEnabled(true);
     ui->run->setEnabled(false);
     ui->increaseSpeed->setEnabled(false);
@@ -75,8 +74,11 @@ void DisplayWindow::run()
 
 void DisplayWindow::stop()
 {
-    timer->stop();
+    if (timer) {
+        timer->stop();
+    }
     delete timer;
+    ui->newBoard->setEnabled(true);
     ui->run->setEnabled(true);
     ui->stop->setEnabled(false);
     changeSpeedOptions();
@@ -133,8 +135,8 @@ void DisplayWindow::populateScene()
 {
     int x = 0;
     int y = 0;
-    for (int i = -TOTALWIDTH; i < TOTALWIDTH; i+=SIZE) {
-        for (int j = -TOTALWIDTH; j < TOTALWIDTH; j+=SIZE) {
+    for (int i = -TOTAL_WIDTH; i < TOTAL_WIDTH; i+=SIZE) {
+        for (int j = -TOTAL_WIDTH; j < TOTAL_WIDTH; j+=SIZE) {
             Cell *cell= new Cell(x, y, SIZE);
             connect(this, SIGNAL(resetAllCells()), cell, SLOT(resetCell()));
             connect(cell, SIGNAL(cellChanged(int,int)), this, SLOT(updateCellInfo(int,int)));

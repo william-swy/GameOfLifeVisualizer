@@ -4,6 +4,7 @@
 #define BOARD_UI_H
 
 #include <QAction>
+#include <QIcon>
 #include <QLabel>
 #include <QMainWindow>
 #include <QMenu>
@@ -38,6 +39,7 @@ namespace Ui {
         // set up determined settings for UI objects
         void setupUi(QMainWindow* MainWindow) {
             MainWindow->showMaximized();
+            MainWindow->setWindowIcon(QIcon(":/Images/pulsar.ico"));
             createActions(MainWindow);
             createActionShortcuts();
             createMenus(MainWindow);

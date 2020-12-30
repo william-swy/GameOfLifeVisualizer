@@ -14,14 +14,23 @@ INCLUDEPATH += ../GameOfLifeLogic
 SOURCES += \
     ../GameOfLifeLogic/gameboard.cpp \
     displaywindow.cpp \
+    cell.cpp \
+    view.cpp \
     main.cpp
 
 HEADERS += \
     ../GameOfLifeLogic/gameboard.h \
     displaywindow.h \
+    cell.h \
+    view.h \
+    board_ui.h
+
 
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    GameOfLifeApp.qrc
