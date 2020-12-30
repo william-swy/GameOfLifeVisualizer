@@ -1,5 +1,12 @@
 <RCC>
     <qresource prefix="/Images">
-        <file>pulsar.ico</file>
+        <file>Icons/pulsar.ico</file>
+        <file>Icons/save.ico</file>
+        <file>Icons/settings.ico</file>
+        <file>Icons/screenshot.ico</file>
+        <file>Icons/image.ico</file>
+        <file>Icons/play.ico</file>
+        <file>Icons/stop.ico</file>
+        <file>Icons/arrow.ico</file>
     </qresource>
 </RCC>

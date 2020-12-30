@@ -4,6 +4,7 @@
 #define BOARD_UI_H
 
 #include <QAction>
+#include <QChar>
 #include <QIcon>
 #include <QLabel>
 #include <QMainWindow>
@@ -21,13 +22,16 @@ namespace Ui {
         QMenuBar *menubar;
 
         // menu bar tabs
-        QMenu *menuFile, *menuView, *menuRun;
+        QMenu *menuFile, *menuEdit, *menuView, *menuRun;
 
         // actions under file menu tab
-        QAction *newBoard, *quit;
+        QAction *newBoard, *save, *settings, *quit;
+
+        // actions under edit menu tab
+        QAction *takeSnapShot, *startRecording, *endRecording;
 
         // actions under view menu tab
-        QAction *resetZoom;
+        QAction *resetZoom, *viewResult;
 
         // actions under run menu tab
         QAction *step, *run, *stop, *increaseSpeed, *decreaseSpeed, *resetSpeed;
@@ -40,7 +44,7 @@ namespace Ui {
         // set up determined settings for UI objects
         void setupUi(QMainWindow* MainWindow) {
             MainWindow->showMaximized();
-            MainWindow->setWindowIcon(QIcon(":/Images/pulsar.ico"));
+            MainWindow->setWindowIcon(QIcon(":/Images/Icons/pulsar.ico"));
             createActions(MainWindow);
             createActionShortcuts();
             createMenus(MainWindow);
@@ -50,6 +54,7 @@ namespace Ui {
             stop->setEnabled(false);
             // status bar set up
             setupStatusBar(MainWindow);
+            addIcons();
         }
 
         // initialize menu drop down actions
@@ -57,10 +62,18 @@ namespace Ui {
         {
             // create file menu tab actions
             newBoard        = new QAction(MainWindow);
+            save            = new QAction(MainWindow);
+            settings        = new QAction(MainWindow);
             quit            = new QAction(MainWindow);
+
+            // create edit menu tab actions;
+            takeSnapShot    = new QAction(MainWindow);
+            startRecording  = new QAction(MainWindow);
+            endRecording    = new QAction(MainWindow);
 
             // create view menu tab actions
             resetZoom       = new QAction(MainWindow);
+            viewResult      = new QAction(MainWindow);
 
             // create run menu tab options
             step            = new QAction(MainWindow);
@@ -78,6 +91,7 @@ namespace Ui {
             menubar->setGeometry(QRect(0, 0, INIT_WIDTH, INIT_HEIGHT/24));
 
             menuFile = new QMenu(menubar);
+            menuEdit = new QMenu(menubar);
             menuView = new QMenu(menubar);
             menuRun = new QMenu(menubar);
 
@@ -85,15 +99,24 @@ namespace Ui {
 
             // add dropdown menu tab actions
             menubar->addAction(menuFile->menuAction());
+            menubar->addAction(menuEdit->menuAction());
             menubar->addAction(menuView->menuAction());
             menubar->addAction(menuRun->menuAction());
 
             // add file menu tab actions
             menuFile->addAction(newBoard);
+            menuFile->addAction(save);
+            menuFile->addAction(settings);
             menuFile->addAction(quit);
+
+            // add edit menu tab actions
+            menuEdit->addAction(takeSnapShot);
+            menuEdit->addAction(startRecording);
+            menuEdit->addAction(endRecording);
 
             // add view menu tab actions
             menuView->addAction(resetZoom);
+            menuView->addAction(viewResult);
 
             // add run menu tab actions
             menuRun->addAction(step);
@@ -111,15 +134,24 @@ namespace Ui {
 
             // menu bar titles
             menuFile->setTitle(QMainWindow::tr("File"));
+            menuEdit->setTitle(QMainWindow::tr("Edit"));
             menuView->setTitle(QMainWindow::tr("View"));
             menuRun->setTitle(QMainWindow::tr("Run"));
 
             // file menu action titles
             newBoard->setText(QMainWindow::tr("New Board"));
+            save->setText(QMainWindow::tr("Save"));
+            settings->setText(QMainWindow::tr("Settings"));
             quit->setText(QMainWindow::tr("Quit"));
+
+            // edit menu action titles
+            takeSnapShot->setText(QMainWindow::tr("Take Snip"));
+            startRecording->setText(QMainWindow::tr("Start Recording"));
+            endRecording->setText(QMainWindow::tr("End Recording"));
 
             // view menu action titles
             resetZoom->setText(QMainWindow::tr("Reset Zoom"));
+            viewResult->setText(QMainWindow::tr("View Result"));
 
             // run menu action titles
             step->setText(QMainWindow::tr("Step Forward"));
@@ -134,6 +166,8 @@ namespace Ui {
         void createActionShortcuts() const {
             #if QT_CONFIG(shortcut)
                 // file menu action shortcuts
+                save->setShortcut(QMainWindow::tr("Ctrl+S"));
+                settings->setShortcut(QMainWindow::tr("Ctrl+Alt+S"));
                 quit->setShortcut(QMainWindow::tr("Ctrl+Q"));
 
                 // run menu action shortcuts
@@ -152,8 +186,25 @@ namespace Ui {
             statusBar->addPermanentWidget(coordDisplay);
             statusBar->addPermanentWidget(new QLabel,1);
             statusBar->addPermanentWidget(display);
-            coordDisplay->setText("hi");
             MainWindow->setStatusBar(statusBar);
+        }
+
+        // add icons to respective QActions
+        void addIcons() const {
+            // file menu icons
+            save->setIcon(QIcon(":/Images/Icons/save.ico"));
+            settings->setIcon(QIcon(":/Images/Icons/settings.ico"));
+
+            // edit menu icons
+            takeSnapShot->setIcon(QIcon(":/Images/Icons/screenshot.ico"));
+
+            // view menu icons
+            viewResult->setIcon(QIcon(":/Images/Icons/image.ico"));
+
+            // run menu icons
+            step->setIcon(QIcon(":/Images/Icons/arrow.ico"));
+            run->setIcon(QIcon(":/Images/Icons/play.ico"));
+            stop->setIcon(QIcon(":/Images/Icons/stop.ico"));
         }
     };
 }
