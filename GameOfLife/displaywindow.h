@@ -85,6 +85,19 @@ private slots:
      */
     void increaseBoardGeneration();
 
+    /**
+     * Sets the current mouse coordinate display to (x,y).
+     *
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     */
+    void setCoordinate(int x, int y);
+
+    /**
+     * Removes the current mouse coordinate display
+     */
+    void removeCoordinate();
+
 signals:
     /**
      * A signal to notify the QGraphicsView object to reset scene zoom level to default.
@@ -139,6 +152,7 @@ private:
      * Updates the status bar with the current generation number.
      */
     void updateStatusBar();
+
 };
 
 #endif // DISPLAYWINDOW_H

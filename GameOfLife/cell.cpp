@@ -8,6 +8,7 @@ Cell::Cell(int x, int y, int size, QGraphicsItem* parent) : QGraphicsObject(pare
     this->yCoord = y;
     this->size = size;
     setFlag(ItemIsSelectable);
+    setAcceptHoverEvents(true);
 }
 
 QRectF Cell::boundingRect() const
@@ -57,4 +58,14 @@ void Cell::updateCell(gameBoard::GameBoard* board)
         alive = !alive;
         update();
     }
+}
+
+void Cell::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    emit mouseEntered(xCoord, yCoord);
+}
+
+void Cell::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    emit mouseLeft();
 }

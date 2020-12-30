@@ -1,7 +1,7 @@
 # Conway's Game Of Life Visualizer
 Desktop app to graphically visualize Conway's Game Of Life with user manipulable inputs
 
-![Application](Images/glider.png)
+![Application](Images/glideranimation.gif)
 
 ## General Description
 This is a graphical representation of [Conway's Game Of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).

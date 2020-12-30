@@ -141,6 +141,8 @@ void DisplayWindow::populateScene()
             connect(this, SIGNAL(resetAllCells()), cell, SLOT(resetCell()));
             connect(cell, SIGNAL(cellChanged(int,int)), this, SLOT(updateCellInfo(int,int)));
             connect(this, SIGNAL(boardChanged(gameBoard::GameBoard*)), cell, SLOT(updateCell(gameBoard::GameBoard*)));
+            connect(cell, SIGNAL(mouseEntered(int, int)), this, SLOT(setCoordinate(int, int)));
+            connect(cell, SIGNAL(mouseLeft()), this, SLOT(removeCoordinate()));
             cell->setPos(QPointF(i ,j));
             scene->addItem(cell);
             x++;
@@ -176,4 +178,16 @@ void DisplayWindow::updateStatusBar()
 {
     QString num = QString::number(board->getGenerationNumber());
     ui->display->setText("Generation number: " + num);
+}
+
+void DisplayWindow::setCoordinate(int x, int y)
+{
+    QString xCoord = QString::number(x);
+    QString yCoord = QString::number(y);
+    ui->coordDisplay->setText("Coord: (" + xCoord + "," + yCoord + ")");
+}
+
+void DisplayWindow::removeCoordinate()
+{
+    ui->coordDisplay->setText("Coord");
 }

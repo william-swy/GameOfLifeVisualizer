@@ -35,6 +35,7 @@ namespace Ui {
         // status bar and it's widgets
         QStatusBar *statusBar;
         QLabel* display;
+        QLabel* coordDisplay;
 
         // set up determined settings for UI objects
         void setupUi(QMainWindow* MainWindow) {
@@ -47,12 +48,8 @@ namespace Ui {
 
             // initially set stop to disabled. Enable only if gameBoard is running
             stop->setEnabled(false);
-
             // status bar set up
-            statusBar = new QStatusBar(MainWindow);
-            display = new QLabel();
-            statusBar->addPermanentWidget(display);
-            MainWindow->setStatusBar(statusBar);
+            setupStatusBar(MainWindow);
         }
 
         // initialize menu drop down actions
@@ -108,7 +105,7 @@ namespace Ui {
         }
 
         // set titles to widgets
-        void setTitles(QMainWindow *MainWindow) {
+        void setTitles(QMainWindow *MainWindow) const {
             // main window title
             MainWindow->setWindowTitle(QMainWindow::tr("Game Of Life"));
 
@@ -134,7 +131,7 @@ namespace Ui {
         }
 
         // set action shortcut keys
-        void createActionShortcuts() {
+        void createActionShortcuts() const {
             #if QT_CONFIG(shortcut)
                 // file menu action shortcuts
                 quit->setShortcut(QMainWindow::tr("Ctrl+Q"));
@@ -144,6 +141,19 @@ namespace Ui {
                 run->setShortcut(QMainWindow::tr("Ctrl+Shift+R"));
                 stop->setShortcut(QMainWindow::tr("Ctrl+Shift+S"));
             #endif
+        }
+
+        // set up status bar
+        void setupStatusBar(QMainWindow* MainWindow) {
+            statusBar = new QStatusBar(MainWindow);
+            display = new QLabel();
+            coordDisplay = new QLabel();
+
+            statusBar->addPermanentWidget(coordDisplay);
+            statusBar->addPermanentWidget(new QLabel,1);
+            statusBar->addPermanentWidget(display);
+            coordDisplay->setText("hi");
+            MainWindow->setStatusBar(statusBar);
         }
     };
 }

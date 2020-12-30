@@ -53,6 +53,20 @@ signals:
      */
     void cellChanged(int x, int y);
 
+
+    /**
+     * A signal notifying that the mouse has entered the current cell.
+     *
+     * @param x The x coordinate of this cell.
+     * @param y The y coordinate of this cell.
+     */
+    void mouseEntered(int x, int y);
+
+    /**
+     * A signal notifying that the mouse has left the current cell.
+     */
+    void mouseLeft();
+
 protected:
     /**
      * Handles the event where this cell object is double clicked by mouse. Flips the current state of this cell and
@@ -61,6 +75,19 @@ protected:
      * @param event The double mouse click event.
      */
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+
+    /**
+     * Signals that the mouse has entered the current cell.
+     *
+     * @param event The mouse hover event .
+     */
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+
+    /**
+     * Signals that the mouse has left the current cell.
+     * @param event
+     */
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
     int size;

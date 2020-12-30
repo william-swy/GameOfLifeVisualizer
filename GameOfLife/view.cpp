@@ -13,6 +13,7 @@ View::View(QWidget *parent) : QGraphicsView(parent)
     setRenderHint(QPainter::Antialiasing);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    setMouseTracking(true);
 }
 
 void View::wheelEvent(QWheelEvent *event)
