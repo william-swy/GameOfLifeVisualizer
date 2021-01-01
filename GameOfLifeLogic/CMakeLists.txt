@@ -1,11 +1,10 @@
 ### Build for gameBoard logic and representation library
 
 
-set(LIB_NAME gameboard_library)
+set(BOARD_LIB gameboard_library)
 set(HEADERS gameboard.h)
 set(SOURCES gameboard.cpp)
 
-add_library(${LIB_NAME} ${SOURCES} ${HEADERS})
+add_library(${BOARD_LIB} ${SOURCES} ${HEADERS})
 
-target_compile_features(${LIB_NAME} PUBLIC cxx_std_11)
-
+target_compile_features(${BOARD_LIB} PUBLIC cxx_std_11)

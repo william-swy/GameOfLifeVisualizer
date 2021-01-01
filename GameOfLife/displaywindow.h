@@ -10,6 +10,7 @@
 #include "cell.h"
 #include "view.h"
 #include "gameboard.h"
+#include "settingsdialog.h"
 
 class DisplayWindow : public QMainWindow
 {
@@ -98,6 +99,16 @@ private slots:
      */
     void removeCoordinate();
 
+    /**
+     * Shows the settings dialog
+     */
+    void showSettings();
+
+    /**
+     * Applies changes made in settings.
+     */
+    void updateSettingsChanges();
+
 signals:
     /**
      * A signal to notify the QGraphicsView object to reset scene zoom level to default.
@@ -120,12 +131,22 @@ private:
     View *view;
     QGraphicsScene *scene;
     gameBoard::GameBoard* board;
+
+    // timer variables
     QTimer* timer = nullptr;
     int delayTime = 1000;
     int currDelayTime = delayTime;  // game ticker delay time
     int minDelayTime = 125;
     int maxDelayTime = 8000;
     int timeFactor = 2;
+
+    // dialogs
+    Ui::SettingsDialog* settingsDialog;
+
+    // Colors
+    QColor outline;
+    QColor dead;
+    QColor alive;
 
     /**
      * Connects all QActions to slots provided by this class

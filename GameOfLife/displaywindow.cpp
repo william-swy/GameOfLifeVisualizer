@@ -18,8 +18,15 @@ DisplayWindow::DisplayWindow(QWidget *parent) : QMainWindow(parent)
     ui->setupUi(this);
     setCentralWidget(this->view);
     setupScene();
-    connectAllSlots();
     updateStatusBar();
+
+    outline = QColor(Qt::black);
+    dead = QColor(Qt::white);
+    alive = QColor(Qt::black);
+
+    this->settingsDialog = new Ui::SettingsDialog(outline, dead, alive, this);
+
+    connectAllSlots();
 }
 
 DisplayWindow::~DisplayWindow()
@@ -124,6 +131,12 @@ void DisplayWindow::connectAllSlots()
     connect(ui->increaseSpeed, SIGNAL(triggered()), this, SLOT(increaseSpeed()));
     connect(ui->decreaseSpeed, SIGNAL(triggered()), this, SLOT(decreaseSpeed()));
     connect(ui->resetSpeed, SIGNAL(triggered()), this, SLOT(resetSpeed()));
+
+    // dialog related actions
+    connect(ui->settings, SIGNAL(triggered()), this, SLOT(showSettings()));
+
+    // settings changes
+    connect(settingsDialog, SIGNAL(updateChanges()), this, SLOT(updateSettingsChanges()));
 }
 
 void DisplayWindow::updateCellInfo(int x, int y)
@@ -137,7 +150,7 @@ void DisplayWindow::populateScene()
     int y = 0;
     for (int i = -TOTAL_WIDTH; i < TOTAL_WIDTH; i+=SIZE) {
         for (int j = -TOTAL_WIDTH; j < TOTAL_WIDTH; j+=SIZE) {
-            Cell *cell= new Cell(x, y, SIZE);
+            auto *cell= new Cell::Cell(x, y, SIZE, outline, dead, alive);
             connect(this, SIGNAL(resetAllCells()), cell, SLOT(resetCell()));
             connect(cell, SIGNAL(cellChanged(int,int)), this, SLOT(updateCellInfo(int,int)));
             connect(this, SIGNAL(boardChanged(gameBoard::GameBoard*)), cell, SLOT(updateCell(gameBoard::GameBoard*)));
@@ -190,4 +203,13 @@ void DisplayWindow::setCoordinate(int x, int y)
 void DisplayWindow::removeCoordinate()
 {
     ui->coordDisplay->setText("Coord");
+}
+
+void DisplayWindow::showSettings() {
+    settingsDialog->exec();
+}
+
+void DisplayWindow::updateSettingsChanges()
+{
+    scene->update();
 }
