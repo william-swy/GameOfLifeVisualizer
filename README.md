@@ -40,7 +40,5 @@ cells obey by (there is still lots to discover)!
 5. `cd` into `builddir` and run `make`. The built binary will be in the folder `GameOfLife` inside the `builddir`.
 
 ## Notes On Dependencies
-- `Catch2` is used as the unittest framework. Building the tests requires `Catch2`. 
-  This can be installed [here](https://github.com/catchorg/Catch2) or by using your package manager.
 - `Qt` is used as the GUI framework. Building the app requires `Qt` libraries which can be found 
   [here](https://www.qt.io/download) or by using your package manager
