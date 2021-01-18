@@ -1,5 +1,5 @@
 #include "cell.h"
-#include "gameboard.h"
+#include "game_of_life/gameboard.h"
 
 
 Cell::Cell::Cell(int x, int y, int size, QColor& outline, QColor& dead, QColor& alive, QGraphicsItem* parent)

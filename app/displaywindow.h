@@ -9,7 +9,7 @@
 #include "board_ui.h"
 #include "cell.h"
 #include "view.h"
-#include "gameboard.h"
+#include "game_of_life/gameboard.h"
 #include "settingsdialog.h"
 
 class DisplayWindow : public QMainWindow
@@ -147,6 +147,11 @@ private:
     QColor outline;
     QColor dead;
     QColor alive;
+
+    // recording
+    int framerate = 10;
+    int width = -1;
+    int height = -1;
 
     /**
      * Connects all QActions to slots provided by this class

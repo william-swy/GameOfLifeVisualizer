@@ -26,12 +26,12 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)
 
     # library to handle game board
-    add_subdirectory(GameOfLifeLogic)
+    add_subdirectory(src)
 
     # executable GUI code
-    add_subdirectory(GameOfLife)
+    add_subdirectory(app)
 
     # tests
-    add_subdirectory(GameOfLifeTests)
+    add_subdirectory(tests)
 endif()
 

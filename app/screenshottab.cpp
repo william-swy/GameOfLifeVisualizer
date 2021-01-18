@@ -21,6 +21,9 @@ Ui::ScreenShotTab::ScreenShotTab(QWidget *parent) : QWidget(parent){
     widthCheck = new QCheckBox(this);
     heightCheck = new QCheckBox(this);
 
+    reset = new QPushButton(this);
+    reset->setText(tr("Reset Recording Settings"));
+
     // label setup
     setupLabels();
 
@@ -40,6 +43,8 @@ Ui::ScreenShotTab::ScreenShotTab(QWidget *parent) : QWidget(parent){
     gridLayout->addWidget(new QWidget, 0,2,1,1);
     gridLayout->addWidget(widthCheck, 1, 2, 1,1);
     gridLayout->addWidget(heightCheck, 2, 2, 1,1);
+    gridLayout->addWidget(new QWidget, 3,1,1,2);
+    gridLayout->addWidget(reset,3,2,1,1);
     setLayout(gridLayout);
 }
 

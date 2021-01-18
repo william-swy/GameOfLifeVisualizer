@@ -9,4 +9,7 @@
         <file>Icons/stop.ico</file>
         <file>Icons/arrow.ico</file>
     </qresource>
+    <qresource prefix="/Data">
+        <file>Data/settings.xml</file>
+    </qresource>
 </RCC>

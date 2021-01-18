@@ -7,6 +7,7 @@
 
 #include <QCheckBox>
 #include <QLabel>
+#include <QPushButton>
 #include <QSpinBox>
 
 namespace Ui {
@@ -28,7 +29,7 @@ namespace Ui {
          * @param width The width of the output GIF in pixels. -1 for keep aspect ratio.
          * @param height The height of the output GIF in pixels. -1 for keep aspect ratio.
          */
-        void dimChanged(int width, int height);
+        void dimChanged(int frame, int width, int height);
 
     private slots:
         /**
@@ -55,6 +56,8 @@ namespace Ui {
 
         QCheckBox *widthCheck;
         QCheckBox *heightCheck;
+
+        QPushButton *reset;
 
         /**
          * Sets label descriptions

@@ -1,4 +1,4 @@
-#include "gameboard.h"
+#include "game_of_life/gameboard.h"
 
 
 gameBoard::GameBoard::GameBoard(int boardWidth, int boardHeight) {

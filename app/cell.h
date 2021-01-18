@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QGraphicsObject>
 #include <QGraphicsItem>
-#include "gameboard.h"
+#include "game_of_life/gameboard.h"
 
 namespace Cell {
     /**

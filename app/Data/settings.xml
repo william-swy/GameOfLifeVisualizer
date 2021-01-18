@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Setting>
+    <Setting Outline="#FFFFFF"/>
+    <Setting Alive="#FFFFFF"/>
+    <Setting Dead="#000000"/>
+    <Setting Frame="10"/>
+    <Setting Width="-1"/>
+    <Setting Height="-1"/>
+</Setting>

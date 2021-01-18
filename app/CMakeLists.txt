@@ -1,19 +1,16 @@
-### Qt GUI application build
-
+## Qt GUI application build
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(APP_NAME GameOfLife)
-
-set(INCLUDES ../GameOfLifeLogic)
-set(APP_ICON_RESOURCE ./GameOfLifeApp.qrc)
+set(APP_NAME game_of_life)
+set(APP_ICON_RESOURCE ./game_of_life_app.qrc)
 
 # Find Qt specific packages
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
-
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Xml REQUIRED)
 
 set(HEADERS
         board_ui.h
@@ -40,5 +37,8 @@ add_executable(${APP_NAME}
         ${HEADERS}
         ${APP_ICON_RESOURCE})
 
-target_include_directories(${APP_NAME} PRIVATE ${INCLUDES})
-target_link_libraries(${APP_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets gameboard_library)
+target_link_libraries(${APP_NAME}
+        PRIVATE
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Xml
+        gameboard_lib)

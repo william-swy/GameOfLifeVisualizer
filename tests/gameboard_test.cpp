@@ -3,7 +3,7 @@
 #include <catch2/catch.hpp>
 #include <utility>
 #include <vector>
-#include "gameboard.h"
+#include "game_of_life/gameboard.h"
 
 const int REPEAT_TIMES = 10;
 
@@ -12,7 +12,6 @@ const int REPEAT_TIMES = 10;
  * @param testBoard gameBoard to check
  * @return if all cells in testBoard dead
  */
-
 bool checkInitialBoardState(gameBoard::GameBoard &testBoard)
 {
     for (int i = 0; i < testBoard.getBoardHeight(); i++) {
