@@ -1,7 +1,7 @@
 // GUI layout for application
 
-#ifndef BOARD_UI_H
-#define BOARD_UI_H
+#ifndef GAME_OF_LIFE_BOARD_UI_H
+#define GAME_OF_LIFE_BOARD_UI_H
 
 #include <QAction>
 #include <QChar>
@@ -208,4 +208,4 @@ namespace Ui {
         }
     };
 }
-#endif // BOARD_UI_H
+#endif // GAME_OF_LIFE_BOARD_UI_H

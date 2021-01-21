@@ -1,126 +1,129 @@
-#include "game_of_life/gameboard.h"
+#include "GameOfLife/gameboard.h"
+#include "GameOfLife/gameboard_out_of_bounds.h"
 
 
-gameBoard::GameBoard::GameBoard(int boardWidth, int boardHeight) {
-    this->width = boardWidth;
-    this->height = boardHeight;
-    this->generationNumber = 0;
-    generateBoardArray(boardWidth, boardHeight);
+gameboard::GameBoard::GameBoard() = default;
+
+gameboard::GameBoard::GameBoard(int boardWidth, int boardHeight)
+{
+  this->width_ = boardWidth;
+  this->height_ = boardHeight;
+  generateBoardArray(boardWidth, boardHeight);
 }
 
-gameBoard::GameBoard::GameBoard(const GameBoard &other) {
+gameboard::GameBoard::GameBoard(const GameBoard &other) {
     copyBoard(other);
 }
 
-gameBoard::GameBoard::~GameBoard() {
+gameboard::GameBoard::~GameBoard() {
     clearBoard();
 }
 
-gameBoard::GameBoard& gameBoard::GameBoard::operator=(const GameBoard& other) {
+gameboard::GameBoard& gameboard::GameBoard::operator=(const GameBoard& other) {
     if (this != &other) {
         clearBoard();
         copyBoard(other);
     }
     return *this;
 }
-void gameBoard::GameBoard::nextState() {
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+void gameboard::GameBoard::nextState() {
+    for (int i = 0; i < height_; i++) {
+        for (int j = 0; j < width_; j++) {
             int aliveNeighbours = aliveNeighbourCount(j, i);
             if (getCell(j, i)) {
                 // Alive cell with less than 2 neighbours dies from underpopulation.
                 // Alive cell with more than 3 neighbours dies from overpopulation.
                 if ((aliveNeighbours < 2) || (aliveNeighbours > 3)) {
-                    nextGameState[j][i] = false;
+                    next_game_state_[j][i] = false;
                 }
                 // Otherwise cell stays alive
                 else {
-                    nextGameState[j][i] = true;
+                    next_game_state_[j][i] = true;
                 }
             }
             else {
-                // Dead cell with exactly 3 alive neigbours becomes alive.
+                // Dead cell with exactly 3 alive neighbours becomes alive.
                 if (aliveNeighbours == 3) {
-                    nextGameState[j][i] = true;
+                    next_game_state_[j][i] = true;
                 }
                 // Otherwise cell stays dead
                 else {
-                    nextGameState[j][i] = false;
+                    next_game_state_[j][i] = false;
                 }
             }
         }
     }
-    // switch currGameState to nextGameState;
-    bool** tmp = currGameState;
-    currGameState = nextGameState;
-    nextGameState = tmp;
+    // switch curr_game_state_ to next_game_state_;
+    bool** tmp = curr_game_state_;
+    curr_game_state_ = next_game_state_;
+    next_game_state_ = tmp;
 
     // advance generation number
-    this->generationNumber++;
+    this->generation_number_++;
 }
 
-bool gameBoard::GameBoard::insertPoint(int x, int y) {
-    if (x < 0 || y < 0 || x >= width || y >= height) {
+bool gameboard::GameBoard::insertPoint(int x, int y) {
+    if (x < 0 || y < 0 || x >= width_ || y >= height_) {
         throw gameBoardOutOfBounds(x, y, __LINE__);
     }
     else {
-        currGameState[x][y] = !currGameState[x][y];
-        return currGameState[x][y];
+        curr_game_state_[x][y] = !curr_game_state_[x][y];
+        return curr_game_state_[x][y];
     }
 }
 
-bool gameBoard::GameBoard::getCell(int x, int y) {
-    if (x < 0 || y < 0 || x >= width || y >= height) {
+bool gameboard::GameBoard::getCell(int x, int y) {
+    if (x < 0 || y < 0 || x >= width_ || y >= height_) {
         throw gameBoardOutOfBounds(x, y, __LINE__);
     }
     else {
-        return currGameState[x][y];
+        return curr_game_state_[x][y];
     }
 }
 
-int gameBoard::GameBoard::getBoardHeight() {
-    return height;
+int gameboard::GameBoard::getBoardHeight() const {
+    return height_;
 }
 
-int gameBoard::GameBoard::getBoardWidth() {
-    return width;
+int gameboard::GameBoard::getBoardWidth() const {
+    return width_;
 }
 
-int gameBoard::GameBoard::getGenerationNumber() {
-    return generationNumber;
+int gameboard::GameBoard::getGenerationNumber() const {
+    return generation_number_;
 }
 
-void gameBoard::GameBoard::copyBoard(const GameBoard &other) {
-    width = other.width;
-    height = other.height;
-    generateBoardArray(other.width, other.height);
+void gameboard::GameBoard::copyBoard(const GameBoard &other) {
+    width_ = other.width_;
+    height_ = other.height_;
+    generateBoardArray(other.width_, other.height_);
 }
 
-void gameBoard::GameBoard::clearBoard() {
-    for (int i = 0; i < width; i++) {
-        delete[] currGameState[i];
-        delete[] nextGameState[i];
+void gameboard::GameBoard::clearBoard() {
+    for (int i = 0; i < width_; i++) {
+        delete[] curr_game_state_[i];
+        delete[] next_game_state_[i];
     }
-    delete[] currGameState;
-    delete[] nextGameState;
+    delete[] curr_game_state_;
+    delete[] next_game_state_;
 }
 
-void gameBoard::GameBoard::generateBoardArray(int boardWidth, int boardHeight) {
-    currGameState = new bool*[boardWidth];
-    nextGameState = new bool*[boardWidth];
+void gameboard::GameBoard::generateBoardArray(int boardWidth, int boardHeight) {
+    curr_game_state_ = new bool*[boardWidth];
+    next_game_state_ = new bool*[boardWidth];
     for (int i = 0; i < boardWidth; i++) {
-        currGameState[i] = new bool[boardHeight];
-        nextGameState[i] = new bool[boardHeight];
+        curr_game_state_[i] = new bool[boardHeight];
+        next_game_state_[i] = new bool[boardHeight];
         for (int j = 0; j < boardHeight; j++) {
-            currGameState[i][j] = false;
-            nextGameState[i][j] = false;
+            curr_game_state_[i][j] = false;
+            next_game_state_[i][j] = false;
         }
     }
 
 }
 
-int gameBoard::GameBoard::aliveNeighbourCount(int x, int y) {
-    if (x < 0 || y < 0 || x >= width || y >= height) {
+int gameboard::GameBoard::aliveNeighbourCount(int x, int y) {
+    if (x < 0 || y < 0 || x >= width_ || y >= height_) {
         throw gameBoardOutOfBounds(x, y, __LINE__);
     }
     else {
