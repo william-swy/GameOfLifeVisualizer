@@ -1,5 +1,5 @@
 #include "cell.h"
-#include "game_of_life/gameboard.h"
+#include "GameOfLife/gameboard.h"
 
 
 Cell::Cell::Cell(int x, int y, int size, QColor& outline, QColor& dead, QColor& alive, QGraphicsItem* parent)
@@ -59,7 +59,7 @@ void Cell::Cell::resetCell()
     }
 }
 
-void Cell::Cell::updateCell(gameBoard::GameBoard* board)
+void Cell::Cell::updateCell(gameboard::GameBoard* board)
 {
     if (alive != board->getCell(xCoord, yCoord)) {
         alive = !alive;

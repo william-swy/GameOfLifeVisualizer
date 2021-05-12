@@ -12,6 +12,33 @@ if (EXISTS "${LOC_PATH}")
     to remove CMakeCache.txt and CMakeFiles.")
 endif ()
 
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+# Update submodules as needed (uses vcpkg as a submodule)
+    option(GIT_SUBMODULE "Check submodules during build" ON)
+    if(GIT_SUBMODULE)
+        message(STATUS "Submodule update")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
+    endif()
+endif()
+
+#if(UNIX) # Should trigger Linx or Apple ONLY
+#    EXECUTE_PROCESS(${CMAKE_CURRENT_SOURCE_DIR}/extern//vcpkg/bootstrap-vcpkg.sh)
+#else() # Should trigger MSVC or MINGW ONLY
+#    EXECUTE_PROCESS(${CMAKE_CURRENT_SOURCE_DIR}/extern/vcpkg/bootstrap-vcpkg.bat)
+#endif()
+
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/extern/vcpkg/scripts/buildsystems/vcpkg.cmake
+  CACHE STRING "Vcpkg toolchain file")
+
+# Enable versioning
+set(VCPKG_FEATURE_FLAGS versions)
+
 project(GameOfLifeApp
         VERSION 1.0
         DESCRIPTION  "Conway's Game of Life Visualizer"
@@ -19,7 +46,7 @@ project(GameOfLifeApp
 
 ### Do only if this is the main project, not a subproject
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD 17)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
     # include tests

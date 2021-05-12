@@ -12,7 +12,7 @@ const int TOTAL_WIDTH = CELL_NUM * SIZE;
 
 DisplayWindow::DisplayWindow(QWidget *parent) : QMainWindow(parent)
     ,ui(new Ui::Board_Ui), view(new View(this))
-    ,board(new gameBoard::GameBoard(TOTAL_CELLS, TOTAL_CELLS)),
+    ,board(new gameboard::GameBoard(TOTAL_CELLS, TOTAL_CELLS)),
     scene(new QGraphicsScene(this))
 {
     ui->setupUi(this);
@@ -47,7 +47,7 @@ void DisplayWindow::setupScene()
 void DisplayWindow::newGameBoard()
 {
     delete board;
-    board = new gameBoard::GameBoard(TOTAL_CELLS, TOTAL_CELLS);
+    board = new gameboard::GameBoard(TOTAL_CELLS, TOTAL_CELLS);
 
     emit resetBoardZoom();
     emit resetAllCells();

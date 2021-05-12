@@ -3,7 +3,11 @@
 *.user
 .idea
 
+# vcpkg
+.vs/
+
 # Build 
+out/
 *build*/
 *.exe
 *.o

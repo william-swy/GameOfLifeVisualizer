@@ -9,7 +9,7 @@
 #include "board_ui.h"
 #include "cell.h"
 #include "view.h"
-#include "game_of_life/gameboard.h"
+#include "GameOfLife/gameboard.h"
 #include "settingsdialog.h"
 
 class DisplayWindow : public QMainWindow
@@ -124,13 +124,13 @@ signals:
      * A signal to notify all Cells that the board state has changed and they should update themselves if necessary.
      * @param board Current gameBoard.
      */
-    void boardChanged(gameBoard::GameBoard* board);
+    void boardChanged(gameboard::GameBoard* board);
 
 private:
     Ui::Board_Ui* ui;
     View *view;
     QGraphicsScene *scene;
-    gameBoard::GameBoard* board;
+    gameboard::GameBoard* board;
 
     // timer variables
     QTimer* timer = nullptr;

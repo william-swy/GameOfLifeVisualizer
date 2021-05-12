@@ -1,0 +1,12 @@
+{
+  "name": "game-of-life-visualizer",
+  "version": "0.1.0",
+  "dependencies": [
+    {
+      "name": "qt5-base"
+    },
+    {
+      "name": "catch2"
+    }
+  ]
+}

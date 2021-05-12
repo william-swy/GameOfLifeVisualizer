@@ -1,14 +1,8 @@
 ## Test suite for gameBoard
 
 # Catch2 as the unit testing framework.
-Include(FetchContent)
 
-FetchContent_Declare(
-        Catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v2.13.1)
-
-FetchContent_MakeAvailable(Catch2)
+find_package(Catch2 REQUIRED)
 
 set(TEST_NAME test_game_board)
 set(SOURCES gameboard_test.cpp)

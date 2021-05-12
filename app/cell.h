@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QGraphicsObject>
 #include <QGraphicsItem>
-#include "game_of_life/gameboard.h"
+#include "GameOfLife/gameboard.h"
 
 namespace Cell {
     /**
@@ -49,7 +49,7 @@ namespace Cell {
          *
          * @param board The gameBoard to check if the current cell has changed states.
          */
-        void updateCell(gameBoard::GameBoard* board);
+        void updateCell(gameboard::GameBoard* board);
 
     signals:
         /**
