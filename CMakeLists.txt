@@ -1,37 +1,26 @@
-### works with 3.5
-cmake_minimum_required(VERSION 3.5...3.19)
+cmake_minimum_required(VERSION 3.18)
 
-if(${CMAKE_VERSION} VERSION_LESS 3.19)
-    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+project(
+  GameOfLifeApp
+  VERSION 1.0
+  DESCRIPTION "Conway's Game of Life Visualizer"
+  LANGUAGES CXX
+)
+
+# Prohibit in source builds
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(
+    FATAL_ERROR
+      "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there."
+  )
 endif()
 
-### Requires out-of-source build
-file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
-if (EXISTS "${LOC_PATH}")
-    message(FATAL_ERROR "You cannot build in a source directory. Please make a build directory and rebuild. Feel free
-    to remove CMakeCache.txt and CMakeFiles.")
-endif ()
-
-project(GameOfLifeApp
-        VERSION 1.0
-        DESCRIPTION  "Conway's Game of Life Visualizer"
-        LANGUAGES CXX)
-
-### Do only if this is the main project, not a subproject
+# Do only if this is the main project, not a subproject
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    set(CMAKE_CXX_STANDARD 11)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  add_subdirectory("src")
 
-    # include tests
-    include(CTest)
+  add_subdirectory("tests")
 
-    # library to handle game board
-    add_subdirectory(GameOfLifeLogic)
-
-    # executable GUI code
-    add_subdirectory(GameOfLife)
-
-    # tests
-    add_subdirectory(GameOfLifeTests)
+  # Include dev tools
+  include(cmake/scripts/dev-tools.cmake)
 endif()
-

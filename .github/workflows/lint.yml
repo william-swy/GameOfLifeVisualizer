@@ -1,0 +1,57 @@
+name: Lint, Analyze, Build, Test
+
+on: [push, pull_request]
+
+concurrency: lint-${{ github.sha }}
+
+jobs:
+  setup-lint-analyze-test:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_DIR: '${{ github.workspace }}/build/'
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg_cache,readwrite
+
+    steps:
+      # Checks out the repository in the current folder.
+      - name: Checks out repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install required packages
+        run: |
+          sudo apt update
+          sudo apt-get install gperf
+          sudo apt-get install gettext
+          sudo apt-get install autopoint
+          sudo apt-get install libx11-dev libgl1-mesa-dev libglu1-mesa-dev libxi-dev libxext-dev
+          sudo apt-get install clang-format
+          sudo apt-get install clang-tidy
+          pip3 install cmake_format==0.6.11 pyyaml
+
+      # Setup vcpkg
+      - name: Restore vcpkg cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/vcpkg_cache
+          key: "${{ runner.os }}-${{ hashFiles('./vcpkg.json') }}"
+      
+      # Configure CMake
+      - name: Configure CMake
+        shell: bash
+        run: cmake -B${{ env.BUILD_DIR }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" 
+
+      - name: Run clang-format
+        run: cmake --build ${{ env.BUILD_DIR }} --target check-format
+      
+      # Run clang-tidy
+      - name: Run clang-tidy
+        run: cmake --build ${{ env.BUILD_DIR }} --target clang-tidy
+    
+      # Run cmake-format
+      - name: Run cmake-format
+        run: cmake --build ${{ env.BUILD_DIR }} --target cmake-format
+
+      # Build test suite
+      - name: Run test suite
+        run: cmake --build ${{ env.BUILD_DIR }} --target test_cell_board

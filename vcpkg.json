@@ -1,0 +1,8 @@
+{
+    "name": "gameoflifevisualizer",
+    "version-string": "0.1.0",
+    "dependencies": [
+        "qt5-base",
+        "catch2"
+    ]
+}
