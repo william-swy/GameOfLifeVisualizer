@@ -16,19 +16,13 @@ DisplayWindow::DisplayWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::Board_Ui),
       view(new View(this)),
-      board(new gameBoard::GameBoard(TOTAL_CELLS, TOTAL_CELLS)),
+      board(cell_board::CellBoard(TOTAL_CELLS, TOTAL_CELLS)),
       scene(new QGraphicsScene(this)) {
   ui->setupUi(this);
   setCentralWidget(this->view);
   setupScene();
   connectAllSlots();
   updateStatusBar();
-}
-
-DisplayWindow::~DisplayWindow() {
-  delete ui;
-  delete scene;
-  delete board;
 }
 
 void DisplayWindow::setupScene() {
@@ -40,8 +34,7 @@ void DisplayWindow::setupScene() {
 }
 
 void DisplayWindow::newGameBoard() {
-  delete board;
-  board = new gameBoard::GameBoard(TOTAL_CELLS, TOTAL_CELLS);
+  board = cell_board::CellBoard(TOTAL_CELLS, TOTAL_CELLS);
 
   emit resetBoardZoom();
   emit resetAllCells();
@@ -51,7 +44,7 @@ void DisplayWindow::newGameBoard() {
 void DisplayWindow::exitApp() { QApplication::quit(); }
 
 void DisplayWindow::stepForward() {
-  board->nextState();
+  board.next_state();
   emit boardChanged(board);
   updateStatusBar();
 }
@@ -118,7 +111,7 @@ void DisplayWindow::connectAllSlots() {
   connect(ui->resetSpeed, SIGNAL(triggered()), this, SLOT(resetSpeed()));
 }
 
-void DisplayWindow::updateCellInfo(int x, int y) { board->insertPoint(x, y); }
+void DisplayWindow::updateCellInfo(int x, int y) { board.insert_point(x, y); }
 
 void DisplayWindow::populateScene() {
   int x = 0;
@@ -128,8 +121,8 @@ void DisplayWindow::populateScene() {
       Cell *cell = new Cell(x, y, SIZE);
       connect(this, SIGNAL(resetAllCells()), cell, SLOT(resetCell()));
       connect(cell, SIGNAL(cellChanged(int, int)), this, SLOT(updateCellInfo(int, int)));
-      connect(this, SIGNAL(boardChanged(gameBoard::GameBoard *)), cell,
-              SLOT(updateCell(gameBoard::GameBoard *)));
+      connect(this, SIGNAL(boardChanged(cell_board::CellBoard &)), cell,
+              SLOT(updateCell(cell_board::CellBoard &)));
       connect(cell, SIGNAL(mouseEntered(int, int)), this, SLOT(setCoordinate(int, int)));
       connect(cell, SIGNAL(mouseLeft()), this, SLOT(removeCoordinate()));
       cell->setPos(QPointF(i, j));
@@ -158,7 +151,7 @@ void DisplayWindow::changeSpeedOptions() {
 }
 
 void DisplayWindow::updateStatusBar() {
-  QString num = QString::number(board->getGenerationNumber());
+  QString num = QString::number(board.get_generation_number());
   ui->display->setText("Generation number: " + num);
 }
 

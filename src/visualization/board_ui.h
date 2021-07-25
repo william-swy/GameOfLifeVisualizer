@@ -1,7 +1,6 @@
 // GUI layout for application
 
-#ifndef BOARD_UI_H
-#define BOARD_UI_H
+#pragma once
 
 #include <QAction>
 #include <QChar>
@@ -206,4 +205,3 @@ namespace Ui {
     }
   };
 }  // namespace Ui
-#endif  // BOARD_UI_H

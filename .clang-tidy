@@ -1,4 +1,4 @@
-Checks:          '*,-google-*,-modernize-*,clang-analyzer-*,cppcoreguidelines-*,readability-*'
+Checks:          '*,-google-*,-modernize-*,clang-analyzer-*,clang-diagnostic-*,cppcoreguidelines-*,readability-*,performance-*, portability-*,-header-filter=.*'
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 FormatStyle:     none

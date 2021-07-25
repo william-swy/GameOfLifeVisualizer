@@ -44,8 +44,8 @@ void Cell::resetCell() {
   }
 }
 
-void Cell::updateCell(gameBoard::GameBoard *board) {
-  if (alive != board->getCell(xCoord, yCoord)) {
+void Cell::updateCell(cell_board::CellBoard &board) {
+  if (alive != board.get_cell(xCoord, yCoord)) {
     alive = !alive;
     update();
   }

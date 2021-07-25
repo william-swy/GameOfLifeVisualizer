@@ -5,9 +5,8 @@
 #include <array>
 #include <catch2/catch.hpp>
 #include <utility>
-#include <vector>
 
-constexpr unsigned REPEAT_TIMES = 100;
+constexpr size_t REPEAT_TIMES = 100;
 
 /**
  * Returns true if all cells in the board have the state false
@@ -493,7 +492,7 @@ TEST_CASE("next_state oscillator pulsar", "[weight=1][part=CellBoard]") {
 
   for (size_t generation = 0; generation < REPEAT_TIMES; generation++) {
     CHECK(test_board.get_generation_number() == generation);
-    
+
     if (generation % 3 == 0) {
       CHECK(check_board_state(test_board, expected_first_state));
     } else if (generation % 3 == 1) {

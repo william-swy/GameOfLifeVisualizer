@@ -1,7 +1,5 @@
-// Main display window. Shows and changes the cell board
-
 #pragma once
-
+// Main display window. Shows and changes the cell board
 #include <QGraphicsScene>
 #include <QMainWindow>
 #include <QTimer>
@@ -15,8 +13,6 @@ class DisplayWindow : public QMainWindow {
   Q_OBJECT
 public:
   explicit DisplayWindow(QWidget* parent = nullptr);
-
-  ~DisplayWindow() override;
 
 private slots:
   // slots for "file" dropdown menu options
@@ -113,13 +109,13 @@ signals:
    * if necessary.
    * @param board Current gameBoard.
    */
-  void boardChanged(gameBoard::GameBoard* board);
+  void boardChanged(cell_board::CellBoard& board);
 
 private:
   Ui::Board_Ui* ui;
   View* view;
   QGraphicsScene* scene;
-  gameBoard::GameBoard* board;
+  cell_board::CellBoard board;
   QTimer* timer = nullptr;
   int delayTime = 1000;
   int currDelayTime = delayTime;  // game ticker delay time

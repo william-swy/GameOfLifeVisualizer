@@ -1,8 +1,7 @@
 //
 // A Graphical representation of a cell on the game board
 //
-#ifndef CELL_H
-#define CELL_H
+#pragma once
 
 #include <QGraphicsItem>
 #include <QGraphicsObject>
@@ -44,7 +43,7 @@ public slots:
    *
    * @param board The gameBoard to check if the current cell has changed states.
    */
-  void updateCell(gameBoard::GameBoard* board);
+  void updateCell(cell_board::CellBoard& board);
 
 signals:
   /**
@@ -96,5 +95,3 @@ private:
   int yCoord;
   bool alive = false;
 };
-
-#endif  // CELL_H

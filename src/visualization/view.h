@@ -2,8 +2,7 @@
 // Manipulable view for entire game board
 //
 
-#ifndef VIEW_H
-#define VIEW_H
+#pragma once
 
 #include <QGraphicsView>
 
@@ -31,5 +30,3 @@ private:
   int maxZoomInTimes;
   int currZoomInTimes;
 };
-
-#endif  // VIEW_H

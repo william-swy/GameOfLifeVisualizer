@@ -6,8 +6,6 @@ set(CMAKE_AUTORCC ON)
 
 set(APP_NAME game_of_life)
 
-set(APP_ICON_RESOURCE ./GameOfLifeApp.qrc)
-
 # Find Qt specific packages
 find_package(
   Qt5
@@ -15,6 +13,17 @@ find_package(
   REQUIRED
 )
 
-add_executable(${APP_NAME} main_view.h main.cpp ${APP_ICON_RESOURCE})
+add_executable(
+  ${APP_NAME}
+  board_ui.h
+  cell.cpp
+  cell.h
+  displaywindow.cpp
+  displaywindow.h
+  GameOfLifeApp.qrc
+  main.cpp
+  view.cpp
+  view.h
+)
 
 target_link_libraries(${APP_NAME} PRIVATE Qt5::Widgets cell_board)
