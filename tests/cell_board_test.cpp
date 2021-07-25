@@ -266,11 +266,61 @@ TEST_CASE("next_state still life loaf", "[weight=1][part=CellBoard]") {
   }
 }
 
-TEST_CASE("next_state still life boat", "[weight=1][part=CellBoard]") {}
+TEST_CASE("next_state still life boat", "[weight=1][part=CellBoard]") {
+  constexpr std::size_t width = 5;
+  constexpr std::size_t height = 5;
+  constexpr std::array<std::array<bool, width>, height> loaf{{
+      {0, 0, 0, 0, 0},
+      {0, 1, 1, 0, 0},
+      {0, 1, 0, 1, 0},
+      {0, 0, 1, 0, 0},
+      {0, 0, 0, 0, 0},
+  }};
 
-TEST_CASE("next_state still life tub", "[weight=1][part=CellBoard]") {}
+  cell_board::CellBoard test_board(width, height);
+  for (auto x_pos = 0; x_pos < width; x_pos++) {
+    for (auto y_pos = 0; y_pos < height; y_pos++) {
+      if (loaf[y_pos][x_pos]) {
+        test_board.insert_point(x_pos, y_pos);
+      }
+    }
+  }
 
-TEST_CASE("next_state oscillator", "[weight=1][part=CellBoard]") {
+  for (size_t generation = 0; generation < REPEAT_TIMES; generation++) {
+    CHECK(test_board.get_generation_number() == generation);
+    test_board.next_state();
+    CHECK(check_board_state(test_board, loaf));
+  }
+}
+
+TEST_CASE("next_state still life tub", "[weight=1][part=CellBoard]") {
+  constexpr std::size_t width = 5;
+  constexpr std::size_t height = 5;
+  constexpr std::array<std::array<bool, width>, height> loaf{{
+      {0, 0, 0, 0, 0},
+      {0, 0, 1, 0, 0},
+      {0, 1, 0, 1, 0},
+      {0, 0, 1, 0, 0},
+      {0, 0, 0, 0, 0},
+  }};
+
+  cell_board::CellBoard test_board(width, height);
+  for (auto x_pos = 0; x_pos < width; x_pos++) {
+    for (auto y_pos = 0; y_pos < height; y_pos++) {
+      if (loaf[y_pos][x_pos]) {
+        test_board.insert_point(x_pos, y_pos);
+      }
+    }
+  }
+
+  for (size_t generation = 0; generation < REPEAT_TIMES; generation++) {
+    CHECK(test_board.get_generation_number() == generation);
+    test_board.next_state();
+    CHECK(check_board_state(test_board, loaf));
+  }
+}
+
+TEST_CASE("next_state oscillator blinker", "[weight=1][part=CellBoard]") {
   constexpr std::size_t width = 5;
   constexpr std::size_t height = 5;
   constexpr std::array<std::array<bool, width>, height> expected_even{
@@ -278,17 +328,179 @@ TEST_CASE("next_state oscillator", "[weight=1][part=CellBoard]") {
   constexpr std::array<std::array<bool, width>, height> expected_odd{
       {{0, 0, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 0, 0}}};
 
-  cell_board::CellBoard test_board(5, 5);
-  test_board.insert_point(2, 1);
-  test_board.insert_point(2, 2);
-  test_board.insert_point(2, 3);
+  cell_board::CellBoard test_board(width, height);
+  for (auto x_pos = 0; x_pos < width; x_pos++) {
+    for (auto y_pos = 0; y_pos < height; y_pos++) {
+      if (expected_even[y_pos][x_pos]) {
+        test_board.insert_point(x_pos, y_pos);
+      }
+    }
+  }
+
   for (size_t generation = 0; generation < REPEAT_TIMES; generation++) {
     CHECK(test_board.get_generation_number() == generation);
     test_board.next_state();
     if (generation % 2) {
-      CHECK(check_board_state(test_board, expected_odd));
-    } else {
       CHECK(check_board_state(test_board, expected_even));
+    } else {
+      CHECK(check_board_state(test_board, expected_odd));
     }
+  }
+}
+
+TEST_CASE("next_state oscillator toad", "[weight=1][part=CellBoard]") {
+  constexpr std::size_t width = 6;
+  constexpr std::size_t height = 6;
+  constexpr std::array<std::array<bool, width>, height> expected_even{{{0, 0, 0, 0, 0, 0},
+                                                                       {0, 0, 0, 0, 0, 0},
+                                                                       {0, 0, 1, 1, 1, 0},
+                                                                       {0, 1, 1, 1, 0, 0},
+                                                                       {0, 0, 0, 0, 0, 0},
+                                                                       {0, 0, 0, 0, 0, 0}}};
+  constexpr std::array<std::array<bool, width>, height> expected_odd{{{0, 0, 0, 0, 0, 0},
+                                                                      {0, 0, 0, 1, 0, 0},
+                                                                      {0, 1, 0, 0, 1, 0},
+                                                                      {0, 1, 0, 0, 1, 0},
+                                                                      {0, 0, 1, 0, 0, 0},
+                                                                      {0, 0, 0, 0, 0, 0}}};
+
+  cell_board::CellBoard test_board(width, height);
+
+  for (auto x_pos = 0; x_pos < width; x_pos++) {
+    for (auto y_pos = 0; y_pos < height; y_pos++) {
+      if (expected_even[y_pos][x_pos]) {
+        test_board.insert_point(x_pos, y_pos);
+      }
+    }
+  }
+
+  for (size_t generation = 0; generation < REPEAT_TIMES; generation++) {
+    CHECK(test_board.get_generation_number() == generation);
+    test_board.next_state();
+    if (generation % 2) {
+      CHECK(check_board_state(test_board, expected_even));
+    } else {
+      CHECK(check_board_state(test_board, expected_odd));
+    }
+  }
+}
+
+TEST_CASE("next_state oscillator beacon", "[weight=1][part=CellBoard]") {
+  constexpr std::size_t width = 6;
+  constexpr std::size_t height = 6;
+  constexpr std::array<std::array<bool, width>, height> expected_even{{{0, 0, 0, 0, 0, 0},
+                                                                       {0, 1, 1, 0, 0, 0},
+                                                                       {0, 1, 1, 0, 0, 0},
+                                                                       {0, 0, 0, 1, 1, 0},
+                                                                       {0, 0, 0, 1, 1, 0},
+                                                                       {0, 0, 0, 0, 0, 0}}};
+  constexpr std::array<std::array<bool, width>, height> expected_odd{{{0, 0, 0, 0, 0, 0},
+                                                                      {0, 1, 1, 0, 0, 0},
+                                                                      {0, 1, 0, 0, 0, 0},
+                                                                      {0, 0, 0, 0, 1, 0},
+                                                                      {0, 0, 0, 1, 1, 0},
+                                                                      {0, 0, 0, 0, 0, 0}}};
+
+  cell_board::CellBoard test_board(width, height);
+
+  for (auto x_pos = 0; x_pos < width; x_pos++) {
+    for (auto y_pos = 0; y_pos < height; y_pos++) {
+      if (expected_even[y_pos][x_pos]) {
+        test_board.insert_point(x_pos, y_pos);
+      }
+    }
+  }
+
+  for (size_t generation = 0; generation < REPEAT_TIMES; generation++) {
+    CHECK(test_board.get_generation_number() == generation);
+    test_board.next_state();
+    if (generation % 2) {
+      CHECK(check_board_state(test_board, expected_even));
+    } else {
+      CHECK(check_board_state(test_board, expected_odd));
+    }
+  }
+}
+
+// Madlad test case to write
+TEST_CASE("next_state oscillator pulsar", "[weight=1][part=CellBoard]") {
+  constexpr std::size_t width = 17;
+  constexpr std::size_t height = 17;
+  constexpr std::array<std::array<bool, width>, height> expected_first_state{
+      {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0},
+       {0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+       {0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
+  constexpr std::array<std::array<bool, width>, height> expected_second_state{
+      {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+       {0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0},
+       {0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0},
+       {0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+       {0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+       {0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+       {0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0},
+       {0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0},
+       {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
+  constexpr std::array<std::array<bool, width>, height> expected_third_state{
+      {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0},
+       {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0},
+       {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0},
+       {0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+       {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0},
+       {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0},
+       {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
+
+  cell_board::CellBoard test_board(width, height);
+
+  for (auto x_pos = 0; x_pos < width; x_pos++) {
+    for (auto y_pos = 0; y_pos < height; y_pos++) {
+      if (expected_first_state[y_pos][x_pos]) {
+        test_board.insert_point(x_pos, y_pos);
+      }
+    }
+  }
+
+  for (size_t generation = 0; generation < REPEAT_TIMES; generation++) {
+    CHECK(test_board.get_generation_number() == generation);
+    
+    if (generation % 3 == 0) {
+      CHECK(check_board_state(test_board, expected_first_state));
+    } else if (generation % 3 == 1) {
+      CHECK(check_board_state(test_board, expected_second_state));
+    } else {
+      CHECK(check_board_state(test_board, expected_third_state));
+    }
+    test_board.next_state();
   }
 }
