@@ -1,7 +1,6 @@
-// Main display window. Shows and changes the gameBoard
+// Main display window. Shows and changes the cell board
 
-#ifndef DISPLAYWINDOW_H
-#define DISPLAYWINDOW_H
+#pragma once
 
 #include <QGraphicsScene>
 #include <QMainWindow>
@@ -154,5 +153,3 @@ private:
    */
   void updateStatusBar();
 };
-
-#endif  // DISPLAYWINDOW_H
