@@ -16,14 +16,20 @@ find_package(
 add_executable(
   ${APP_NAME}
   board_ui.h
+  board_model.h
+  board_model.cpp
+  board_scene.h
+  board_scene.cpp
   cell.cpp
   cell.h
   displaywindow.cpp
   displaywindow.h
   GameOfLifeApp.qrc
   main.cpp
+  main_window.h
+  main_window.cpp
   view.cpp
   view.h
-)
+ "board_scene.h" "board_scene.cpp" "board_model.h" "board_model.cpp")
 
 target_link_libraries(${APP_NAME} PRIVATE Qt5::Widgets cell_board)
