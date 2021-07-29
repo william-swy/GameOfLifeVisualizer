@@ -7,19 +7,19 @@
 #include <QGraphicsObject>
 #include <QPainter>
 
-#include "cell_board.h"
+#include "board_model.h"
 
 class Cell : public QGraphicsObject {
   Q_OBJECT
 public:
-  Cell(int x, int y, int size, QGraphicsItem* parent = nullptr);
+  Cell(quint64 x_pos, quint64 y_pos, quint64 size, QGraphicsItem* parent = nullptr);
 
   /**
    * Returns the bounding box of the current cell.
    *
    * @return A QRectF that represents the current cell's bounding box
    */
-  QRectF boundingRect() const override;
+  [[nodiscard]] QRectF boundingRect() const override;
 
   /**
    * Paints the current cell with a black boarder. If the cell state is dead ('alive == false`), the
@@ -31,7 +31,7 @@ public:
    */
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
-public slots:
+private slots:
   /**
    * Resets the current cell state to dead. Redraws changes if necessary.
    */
@@ -43,16 +43,16 @@ public slots:
    *
    * @param board The gameBoard to check if the current cell has changed states.
    */
-  void updateCell(cell_board::CellBoard& board);
+  void updateCell(const BoardModel* board);
 
 signals:
   /**
    * A signal notifying that this cell has changed state.
    *
-   * @param x The x coordinate of this cell.
-   * @param y The y coordinate of this cell.
+   * @param x_pos The x coordinate of this cell.
+   * @param y_pos The y coordinate of this cell.
    */
-  void cellChanged(int x, int y);
+  void cellChanged(quint64 x_pos, quint64 y_pos);
 
   /**
    * A signal notifying that the mouse has entered the current cell.
@@ -90,8 +90,8 @@ protected:
   void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override;
 
 private:
-  int size;
-  int xCoord;
-  int yCoord;
-  bool alive = false;
+  quint64 size;
+  quint64 x_coord;
+  quint64 y_coord;
+  bool alive{false};
 };

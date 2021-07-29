@@ -9,8 +9,6 @@ class BoardModel : public QObject {
 public:
   BoardModel(quint64 board_width, quint64 board_height, QObject* parent = nullptr);
 
-  void next_state() noexcept;
-
   bool get_cell(quint64 x_pos, quint64 y_pos) const;
 
   quint64 width;
@@ -19,4 +17,15 @@ public:
 
 private:
   cell_board::CellBoard board;
+
+signals:
+  void board_changed(const BoardModel* model);
+
+public slots:
+  void next_state() noexcept;
+
+private slots:
+  void update_board(quint64 x_pos, quint64 y_pos);
+
+  void reset_board();
 };

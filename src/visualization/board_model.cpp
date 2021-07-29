@@ -8,8 +8,20 @@ BoardModel::BoardModel(quint64 board_width, quint64 board_height, QObject* paren
       width(board_width),
       height(board_height) {}
 
-void BoardModel::next_state() noexcept { board.next_state(); }
+void BoardModel::next_state() noexcept {
+  board.next_state();
+  emit board_changed(this);
+}
 
 bool BoardModel::get_cell(quint64 x_pos, quint64 y_pos) const {
   return board.get_cell(static_cast<std::size_t>(x_pos), static_cast<std::size_t>(y_pos));
+}
+
+void BoardModel::reset_board() {
+  board = cell_board::CellBoard(static_cast<std::size_t>(width), static_cast<std::size_t>(height));
+  emit board_changed(this);
+}
+
+void BoardModel::update_board(quint64 x_pos, quint64 y_pos) {
+  board.insert_point(static_cast<std::size_t>(x_pos), static_cast<std::size_t>(y_pos));
 }

@@ -18,7 +18,7 @@ BoardScene::BoardScene(quint32 cell_width, QWidget* parent)
       num_cells_width(0),
       num_cells_height(0) {}
 
-void BoardScene::link_board(BoardModel* model) noexcept {
+void BoardScene::link_board(const BoardModel* model) noexcept {
   // Remove existing items if any
   for each (const auto& item in items()) {
     removeItem(item);
@@ -43,6 +43,9 @@ void BoardScene::link_board(BoardModel* model) noexcept {
       Cell* cell = new Cell(x_coord, y_coord, cell_width);
       cell->setPos(QPointF(eff_x_pos, eff_y_pos));
       addItem(cell);
+      connect(cell, SIGNAL(cellChanged(quint64, quint64)), model,
+              SLOT(update_board(quint64, quint64)));
+      connect(model, SIGNAL(board_changed(const BoardModel*)), cell, SLOT(updateCell(const BoardModel*)));
     }
   }
 }

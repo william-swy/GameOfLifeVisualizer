@@ -1,21 +1,25 @@
 #include "cell.h"
 
-#include "cell_board.h"
+#include <QBrush>
+#include <QGraphicsItem>
+#include <QGraphicsSceneHoverEvent>
+#include <QGraphicsSceneMouseEvent>
+#include <QPen>
+#include <QRectF>
+#include <QStyleOptionGraphicsItem>
+#include <QWidget>
 
-Cell::Cell(int x, int y, int size, QGraphicsItem *parent) : QGraphicsObject(parent) {
-  this->xCoord = x;
-  this->yCoord = y;
-  this->size = size;
+#include "board_model.h"
+
+Cell::Cell(quint64 x_pos, quint64 y_pos, quint64 size, QGraphicsItem *parent)
+    : QGraphicsObject(parent), x_coord(x_pos), y_coord(y_pos), size(size) {
   setFlag(ItemIsSelectable);
   setAcceptHoverEvents(true);
 }
 
 QRectF Cell::boundingRect() const { return QRectF(0, 0, size, size); }
 
-void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-  Q_UNUSED(widget);
-  Q_UNUSED(option);
-
+void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
   QRectF rect = boundingRect();
   QPen pen(Qt::black, 1);
   painter->setPen(pen);
@@ -30,11 +34,10 @@ void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
   }
 }
 
-void Cell::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
-  Q_UNUSED(event);
+void Cell::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *) {
   alive = !alive;
   update();
-  emit cellChanged(xCoord, yCoord);
+  emit cellChanged(x_coord, y_coord);
 }
 
 void Cell::resetCell() {
@@ -44,13 +47,13 @@ void Cell::resetCell() {
   }
 }
 
-void Cell::updateCell(cell_board::CellBoard &board) {
-  if (alive != board.get_cell(xCoord, yCoord)) {
+void Cell::updateCell(const BoardModel* board) {
+  if (alive != board->get_cell(x_coord, y_coord)) {
     alive = !alive;
     update();
   }
 }
 
-void Cell::hoverEnterEvent(QGraphicsSceneHoverEvent *event) { emit mouseEntered(xCoord, yCoord); }
+void Cell::hoverEnterEvent(QGraphicsSceneHoverEvent *) { emit mouseEntered(x_coord, y_coord); }
 
-void Cell::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) { emit mouseLeft(); }
+void Cell::hoverLeaveEvent(QGraphicsSceneHoverEvent *) { emit mouseLeft(); }
