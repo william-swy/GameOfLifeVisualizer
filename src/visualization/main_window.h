@@ -7,6 +7,7 @@
 #include "board_scene.h"
 #include "board_model.h"
 #include "main_menu.h"
+#include "board_status.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -18,4 +19,5 @@ private:
   BoardScene* scene;
   BoardModel* model;
   MainMenu* menu;
+  BoardStatus* status_bar;
 };
