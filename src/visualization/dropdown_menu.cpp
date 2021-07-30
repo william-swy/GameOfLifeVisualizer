@@ -1,6 +1,7 @@
 #include "dropdown_menu.h"
 
 #include <QAction>
+#include <QApplication>
 #include <QIcon>
 #include <QMenu>
 #include <QString>
@@ -18,7 +19,10 @@ FileMenu::FileMenu(const QString& title, QWidget* parent)
   addAction(save);
   addAction(settings);
   addAction(quit);
+  connect(quit, SIGNAL(triggered()), this, SLOT(quit_app()));
 }
+
+void FileMenu::quit_app() { QApplication::quit(); }
 
 EditMenu::EditMenu(const QString& title, QWidget* parent)
     : QMenu(title, parent),
@@ -127,4 +131,20 @@ void RunMenu::reset_run_speed() {
 
 void ViewMenu::link_view(const View* view) noexcept {
   connect(reset_zoom, SIGNAL(triggered()), view, SLOT(reset_zoom()));
+}
+
+void FileMenu::configure_shortcuts() {
+#if QT_CONFIG(shortcut)
+  save->setShortcut(QMenu::tr("Ctrl+S"));
+  settings->setShortcut(QMenu::tr("Ctrl+Alt+S"));
+  quit->setShortcut(QMenu::tr("Ctrl+Q"));
+#endif
+}
+
+void RunMenu::configure_shortcuts() {
+#if QT_CONFIG(shortcut)
+  step->setShortcut(QMenu::tr("Ctrl+N"));
+  run->setShortcut(QMenu::tr("Ctrl+Shift+R"));
+  stop->setShortcut(QMenu::tr("Ctrl+Shift+S"));
+#endif
 }

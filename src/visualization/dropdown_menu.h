@@ -14,10 +14,15 @@ class FileMenu : public QMenu {
 public:
   FileMenu(const QString& title, QWidget* parent = nullptr);
 
+private slots:
+  void quit_app();
+
 private:
   QAction* save;
   QAction* settings;
   QAction* quit;
+
+  void configure_shortcuts();
 };
 
 class EditMenu : public QMenu {
@@ -65,6 +70,8 @@ private:
   quint64 time_scaling_factor{2};
 
   void change_speed_option() noexcept;
+
+  void configure_shortcuts();
 
 private slots:
   void run_automaton();

@@ -15,7 +15,6 @@ find_package(
 
 add_executable(
   ${APP_NAME}
-  # board_ui.h
   board_model.cpp
   board_model.h
   board_scene.cpp
@@ -24,8 +23,6 @@ add_executable(
   board_status.h
   cell.cpp
   cell.h
-  # displaywindow.cpp
-  # displaywindow.h
   dropdown_menu.cpp
   dropdown_menu.h
   GameOfLifeApp.qrc
