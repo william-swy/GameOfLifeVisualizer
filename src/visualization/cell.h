@@ -57,10 +57,10 @@ signals:
   /**
    * A signal notifying that the mouse has entered the current cell.
    *
-   * @param x The x coordinate of this cell.
-   * @param y The y coordinate of this cell.
+   * @param x_pos The x coordinate of this cell.
+   * @param y_pos The y coordinate of this cell.
    */
-  void mouseEntered(int x, int y);
+  void mouseEntered(quint64 x_pos, quint64 y_pos);
 
   /**
    * A signal notifying that the mouse has left the current cell.

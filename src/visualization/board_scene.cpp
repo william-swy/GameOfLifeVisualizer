@@ -7,6 +7,7 @@
 #include <QWidget>
 
 #include "board_model.h"
+#include "board_status.h"
 #include "cell.h"
 #include "cell_board.h"
 
@@ -45,7 +46,16 @@ void BoardScene::link_board(const BoardModel* model) noexcept {
       addItem(cell);
       connect(cell, SIGNAL(cellChanged(quint64, quint64)), model,
               SLOT(update_board(quint64, quint64)));
-      connect(model, SIGNAL(board_changed(const BoardModel*)), cell, SLOT(updateCell(const BoardModel*)));
+      connect(model, SIGNAL(board_changed(const BoardModel*)), cell,
+              SLOT(updateCell(const BoardModel*)));
+      connect(cell, &Cell::mouseEntered, this,
+              [=](quint64 x_pos, quint64 y_pos) { emit cell_entered(x_pos, y_pos); });
+      connect(cell, &Cell::mouseLeft, this, [=]() { emit cell_left(); });
     }
   }
+}
+
+void BoardScene::link_status_bar(const BoardStatus* status) noexcept {
+  connect(this, &BoardScene::cell_entered, status, &BoardStatus::set_coordinate);
+  connect(this, &BoardScene::cell_left, status, &BoardStatus::remove_coordinate);
 }

@@ -19,7 +19,9 @@ MainWindow::MainWindow(QWidget* parent)
   setCentralWidget(view);
   view->setScene(scene);
   scene->link_board(model);
+  scene->link_status_bar(status_bar);
   menu->link_board(model);
+  status_bar->link_board(model);
   setMenuBar(menu);
   setStatusBar(status_bar);
   setWindowTitle(QMainWindow::tr("Game Of Life"));

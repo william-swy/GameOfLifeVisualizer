@@ -11,6 +11,8 @@ public:
 
   bool get_cell(quint64 x_pos, quint64 y_pos) const;
 
+  quint64 get_generation_number() const noexcept;
+
   quint64 width;
 
   quint64 height;

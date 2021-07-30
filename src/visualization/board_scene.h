@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "board_model.h"
+#include "board_status.h"
 
 class BoardScene : public QGraphicsScene {
   Q_OBJECT
@@ -11,6 +12,13 @@ public:
   BoardScene(quint32 cell_width, QWidget* parent = nullptr);
 
   void link_board(const BoardModel* model) noexcept;
+
+  void link_status_bar(const BoardStatus* status) noexcept;
+
+signals:
+  void cell_entered(quint64 x_pos, quint64 y_pos);
+
+  void cell_left();
 
 private:
   qint64 board_start_x_pos;  // X coordinate of board corner

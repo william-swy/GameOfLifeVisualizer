@@ -17,6 +17,10 @@ bool BoardModel::get_cell(quint64 x_pos, quint64 y_pos) const {
   return board.get_cell(static_cast<std::size_t>(x_pos), static_cast<std::size_t>(y_pos));
 }
 
+quint64 BoardModel::get_generation_number() const noexcept {
+  return static_cast<quint64>(board.get_generation_number());
+}
+
 void BoardModel::reset_board() {
   board = cell_board::CellBoard(static_cast<std::size_t>(width), static_cast<std::size_t>(height));
   emit board_changed(this);
