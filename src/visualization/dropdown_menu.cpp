@@ -7,6 +7,9 @@
 #include <QTimer>
 #include <QWidget>
 
+#include "board_model.h"
+#include "view.h"
+
 FileMenu::FileMenu(const QString& title, QWidget* parent)
     : QMenu(title, parent),
       save(new QAction(QIcon(":/Images/Icons/save.ico"), QAction::tr("Save"))),
@@ -120,4 +123,8 @@ void RunMenu::decrease_run_speed() {
 void RunMenu::reset_run_speed() {
   curr_delay_time = default_delay_time;
   change_speed_option();
+}
+
+void ViewMenu::link_view(const View* view) noexcept {
+  connect(reset_zoom, SIGNAL(triggered()), view, SLOT(reset_zoom()));
 }

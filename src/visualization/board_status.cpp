@@ -11,11 +11,11 @@ BoardStatus::BoardStatus(QWidget* parent)
   addPermanentWidget(coordinate_display);
   addPermanentWidget(new QLabel, 1);
   addPermanentWidget(gen_num_display);
-  gen_num_display->setText("Generation number: 0");
 }
 
 void BoardStatus::link_board(const BoardModel* model) noexcept {
   connect(model, &BoardModel::board_changed, this, &BoardStatus::update_gen_num);
+  update_gen_num(model);
 }
 
 void BoardStatus::update_gen_num(const BoardModel* model) {

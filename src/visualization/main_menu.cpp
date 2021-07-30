@@ -7,6 +7,7 @@
 #include <QWidget>
 
 #include "dropdown_menu.h"
+#include "view.h"
 
 MainMenu::MainMenu(quint64 width, quint64 height, QWidget* parent)
     : QMenuBar(parent),
@@ -18,7 +19,9 @@ MainMenu::MainMenu(quint64 width, quint64 height, QWidget* parent)
   add_tab_actions();
 }
 
-void MainMenu::link_board(const BoardModel* model) { run_menu->link_board(model); }
+void MainMenu::link_board(const BoardModel* model) noexcept { run_menu->link_board(model); }
+
+void MainMenu::link_view(const View* view) noexcept { view_menu->link_view(view); }
 
 void MainMenu::add_tab_actions() {
   // add dropdown menu tab actions

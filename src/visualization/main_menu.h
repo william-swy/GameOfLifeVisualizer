@@ -7,13 +7,16 @@
 
 #include "board_model.h"
 #include "dropdown_menu.h"
+#include "view.h"
 
 class MainMenu : public QMenuBar {
   Q_OBJECT
 public:
   MainMenu(quint64 width, quint64 height, QWidget* parent = nullptr);
 
-  void link_board(const BoardModel* model);
+  void link_board(const BoardModel* model) noexcept;
+
+  void link_view(const View* view) noexcept;
 
 private:
   void add_tab_actions();

@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget* parent)
   scene->link_board(model);
   scene->link_status_bar(status_bar);
   menu->link_board(model);
+  menu->link_view(view);
   status_bar->link_board(model);
   setMenuBar(menu);
   setStatusBar(status_bar);

@@ -5,6 +5,8 @@
 #pragma once
 
 #include <QGraphicsView>
+#include <QWheelEvent>
+#include <QWidget>
 
 class View : public QGraphicsView {
   Q_OBJECT
@@ -15,7 +17,7 @@ public slots:
   /**
    * Resets app zoom level to default.
    */
-  void resetZoom();
+  void reset_zoom();
 
 protected:
   /**
@@ -26,7 +28,7 @@ protected:
   void wheelEvent(QWheelEvent* event) override;
 
 private:
-  double scaleFactor;
-  int maxZoomInTimes;
-  int currZoomInTimes;
+  qreal scale_factor;
+  qint32 max_zoom_in_times;
+  qint32 curr_zoom_in_times;
 };

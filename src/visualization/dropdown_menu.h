@@ -7,6 +7,7 @@
 #include <QWidget>
 
 #include "board_model.h"
+#include "view.h"
 
 class FileMenu : public QMenu {
   Q_OBJECT
@@ -33,6 +34,8 @@ class ViewMenu : public QMenu {
   Q_OBJECT
 public:
   ViewMenu(const QString& title, QWidget* parent = nullptr);
+
+  void link_view(const View* view) noexcept;
 
   QAction* reset_zoom;
   QAction* view_result;
