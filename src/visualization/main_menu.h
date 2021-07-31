@@ -6,7 +6,10 @@
 #include <QWidget>
 
 #include "board_model.h"
-#include "dropdown_menu.h"
+#include "submenu/edit_menu.h"
+#include "submenu/file_menu.h"
+#include "submenu/run_menu.h"
+#include "submenu/view_menu.h"
 #include "view.h"
 
 class MainMenu : public QMenuBar {

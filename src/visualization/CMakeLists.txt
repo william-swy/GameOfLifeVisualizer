@@ -22,14 +22,20 @@ add_executable(
   board_status.h
   cell.cpp
   cell.h
-  dropdown_menu.cpp
-  dropdown_menu.h
   GameOfLifeApp.qrc
   main.cpp
   main_menu.cpp
   main_menu.h
   main_window.cpp
   main_window.h
+  submenu/edit_menu.cpp
+  submenu/edit_menu.h
+  submenu/file_menu.cpp
+  submenu/file_menu.h
+  submenu/run_menu.cpp
+  submenu/run_menu.h
+  submenu/view_menu.cpp
+  submenu/view_menu.h
   view.cpp
   view.h
 )

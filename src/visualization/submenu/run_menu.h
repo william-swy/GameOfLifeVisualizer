@@ -2,49 +2,10 @@
 
 #include <QAction>
 #include <QMenu>
-#include <QString>
 #include <QTimer>
 #include <QWidget>
 
-#include "board_model.h"
-#include "view.h"
-
-class FileMenu : public QMenu {
-  Q_OBJECT
-public:
-  FileMenu(const QString& title, QWidget* parent = nullptr);
-
-private slots:
-  void quit_app();
-
-private:
-  QAction* save;
-  QAction* settings;
-  QAction* quit;
-
-  void configure_shortcuts();
-};
-
-class EditMenu : public QMenu {
-  Q_OBJECT
-public:
-  EditMenu(const QString& title, QWidget* parent = nullptr);
-
-  QAction* take_snap_shot;
-  QAction* start_recording;
-  QAction* end_recording;
-};
-
-class ViewMenu : public QMenu {
-  Q_OBJECT
-public:
-  ViewMenu(const QString& title, QWidget* parent = nullptr);
-
-  void link_view(const View* view) noexcept;
-
-  QAction* reset_zoom;
-  QAction* view_result;
-};
+#include "../board_model.h"
 
 class RunMenu : public QMenu {
   Q_OBJECT

@@ -6,7 +6,11 @@
 #include <QString>
 #include <QWidget>
 
-#include "dropdown_menu.h"
+#include "board_model.h"
+#include "submenu/edit_menu.h"
+#include "submenu/file_menu.h"
+#include "submenu/run_menu.h"
+#include "submenu/view_menu.h"
 #include "view.h"
 
 MainMenu::MainMenu(quint64 width, quint64 height, QWidget* parent)

@@ -2,8 +2,18 @@
     "name": "game-of-life-visualizer",
     "version-string": "0.1.0",
     "dependencies": [
-        { "name": "qt5-base", "version>=": "5.15.2#9" },
-        { "name": "catch2", "version>=": "2.13.6#1" }
+        {
+            "name": "qt5-base",
+            "version>=": "5.15.2#9"
+        },
+        {
+            "name": "catch2",
+            "version>=": "2.13.6#1"
+        },
+        {
+            "name": "graphicsmagick",
+            "version>=": "1.3.36"
+        }
     ],
     "builtin-baseline": "7d2541c69cc2f9099a118de1a80f59e29c5de15d"
 }

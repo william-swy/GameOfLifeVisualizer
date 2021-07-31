@@ -1,46 +1,11 @@
-#include "dropdown_menu.h"
+#include "run_menu.h"
 
 #include <QAction>
-#include <QApplication>
-#include <QIcon>
 #include <QMenu>
-#include <QString>
 #include <QTimer>
 #include <QWidget>
 
-#include "board_model.h"
-#include "view.h"
-
-FileMenu::FileMenu(const QString& title, QWidget* parent)
-    : QMenu(title, parent),
-      save(new QAction(QIcon(":/Images/Icons/save.ico"), QAction::tr("Save"))),
-      settings(new QAction(QIcon(":/Images/Icons/settings.ico"), QAction::tr("Settings"))),
-      quit(new QAction(QAction::tr("Quit"))) {
-  addAction(save);
-  addAction(settings);
-  addAction(quit);
-  connect(quit, SIGNAL(triggered()), this, SLOT(quit_app()));
-}
-
-void FileMenu::quit_app() { QApplication::quit(); }
-
-EditMenu::EditMenu(const QString& title, QWidget* parent)
-    : QMenu(title, parent),
-      take_snap_shot(new QAction(QIcon(":/Images/Icons/screenshot.ico"), QAction::tr("Take Snip"))),
-      start_recording(new QAction(QAction::tr("Start Recording"))),
-      end_recording(new QAction(QAction::tr("End Recording"))) {
-  addAction(take_snap_shot);
-  addAction(start_recording);
-  addAction(end_recording);
-}
-
-ViewMenu::ViewMenu(const QString& title, QWidget* parent)
-    : QMenu(title, parent),
-      reset_zoom(new QAction(QAction::tr("Reset Zoom"))),
-      view_result(new QAction(QIcon(":/Images/Icons/image.ico"), QAction::tr("View Result"))) {
-  addAction(reset_zoom);
-  addAction(view_result);
-}
+#include "../board_model.h"
 
 RunMenu::RunMenu(const QString& title, QWidget* parent)
     : QMenu(title, parent),
@@ -127,18 +92,6 @@ void RunMenu::decrease_run_speed() {
 void RunMenu::reset_run_speed() {
   curr_delay_time = default_delay_time;
   change_speed_option();
-}
-
-void ViewMenu::link_view(const View* view) noexcept {
-  connect(reset_zoom, SIGNAL(triggered()), view, SLOT(reset_zoom()));
-}
-
-void FileMenu::configure_shortcuts() {
-#if QT_CONFIG(shortcut)
-  save->setShortcut(QMenu::tr("Ctrl+S"));
-  settings->setShortcut(QMenu::tr("Ctrl+Alt+S"));
-  quit->setShortcut(QMenu::tr("Ctrl+Q"));
-#endif
 }
 
 void RunMenu::configure_shortcuts() {
