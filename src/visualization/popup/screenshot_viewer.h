@@ -2,9 +2,9 @@
 
 #include <QDialog>
 #include <QLabel>
+#include <QPushButton>
 #include <QScrollArea>
 #include <QWidget>
-#include <QPushButton>
 
 class ScreenshotViewer : public QDialog {
   Q_OBJECT
@@ -18,4 +18,9 @@ private:
   QScrollArea* scroll_area;
   QPushButton* discard;
   QPushButton* save;
+
+  void connect_signal_slots() noexcept;
+
+private slots:
+  void save_displayed_img();
 };

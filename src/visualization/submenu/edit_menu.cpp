@@ -36,9 +36,7 @@ void EditMenu::link_view(const View* view) noexcept {
 void EditMenu::receive_screen_shot(const QPixmap& img) {
   if (is_recording) {
   } else {
-    //auto h = img.height();
-    //auto w = img.width();
     screenshot_viewer->set_display_image(img);
-    screenshot_viewer->exec();
+    screenshot_viewer->open();
   }
 }
