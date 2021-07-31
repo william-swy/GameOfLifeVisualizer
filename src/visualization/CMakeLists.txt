@@ -28,6 +28,8 @@ add_executable(
   main_menu.h
   main_window.cpp
   main_window.h
+  popup/screenshot_viewer.cpp
+  popup/screenshot_viewer.h
   submenu/edit_menu.cpp
   submenu/edit_menu.h
   submenu/file_menu.cpp

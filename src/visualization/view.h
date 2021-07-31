@@ -7,6 +7,7 @@
 #include <QGraphicsView>
 #include <QWheelEvent>
 #include <QWidget>
+#include <QPixmap>
 
 class View : public QGraphicsView {
   Q_OBJECT
@@ -18,6 +19,11 @@ public slots:
    * Resets app zoom level to default.
    */
   void reset_zoom();
+
+  void receive_screenshot_request();
+
+signals:
+  void send_screenshot(const QPixmap& img);
 
 protected:
   /**

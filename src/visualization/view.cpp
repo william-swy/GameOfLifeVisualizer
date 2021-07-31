@@ -2,6 +2,7 @@
 
 #include <QGraphicsView>
 #include <QPainter>
+#include <QPixmap>
 #include <QWheelEvent>
 #include <QtMath>
 
@@ -14,6 +15,10 @@ View::View(QWidget *parent)
   setCacheMode(QGraphicsView::CacheBackground);
   setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
   setMouseTracking(true);
+}
+
+void View::receive_screenshot_request() {
+  emit send_screenshot(grab(QRect(0, 0, viewport()->size().width(), viewport()->size().height())));
 }
 
 void View::wheelEvent(QWheelEvent *event) {
