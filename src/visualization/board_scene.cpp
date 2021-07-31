@@ -21,7 +21,7 @@ BoardScene::BoardScene(quint32 cell_width, QWidget* parent)
 
 void BoardScene::link_board(const BoardModel* model) noexcept {
   // Remove existing items if any
-  for each (const auto& item in items()) {
+  for (const auto& item : items()) {
     removeItem(item);
   }
 
