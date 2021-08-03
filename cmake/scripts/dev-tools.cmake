@@ -1,8 +1,14 @@
 # Get all source files
 file(GLOB_RECURSE ALL_CXX_SOURCE_FILES src/*.cpp src/*.h tests/*.h tests/*.cpp)
 
-set(ALL_CMAKE_FILES cmake/scripts/dev-tools.cmake tests/CMakeLists.txt src/CMakeLists.txt
-                    src/visualization/CMakeLists.txt src/cell_board/CMakeLists.txt CMakeLists.txt
+set(ALL_CMAKE_FILES
+    cmake/scripts/dev-tools.cmake
+    tests/CMakeLists.txt
+    src/CMakeLists.txt
+    src/visualization/CMakeLists.txt
+    src/cell_board/CMakeLists.txt
+    CMakeLists.txt
+    src/gif_generator/CMakeLists.txt
 )
 foreach(SOURCE_FILE ${ALL_CMAKE_FILES})
   list(APPEND ALL_CMAKE_SOURCE_FILES ${CMAKE_SOURCE_DIR}/${SOURCE_FILE})

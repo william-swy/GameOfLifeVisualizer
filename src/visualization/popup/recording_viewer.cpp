@@ -1,6 +1,7 @@
 #include "recording_viewer.h"
 
 #include <QDialog>
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QImage>
 #include <QLabel>
@@ -10,6 +11,11 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <QWidget>
+#include <algorithm>
+#include <string>
+#include <vector>
+
+#include "gif_generator.h"
 
 RecordingViewer::RecordingViewer(QWidget* parent)
     : QDialog(parent),
@@ -104,4 +110,20 @@ void RecordingViewer::show_previous_image() {
   render_current_idx_img();
 }
 
-void RecordingViewer::save_images_to_gif() {}
+void RecordingViewer::save_images_to_gif() {
+  const auto save_file
+      = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("Images (*.gif)"));
+  if (!save_file.isEmpty()) {
+    std::vector<gif::Image> converted_imgs;
+    converted_imgs.resize(images.size());  // Allocate space to place elements
+    std::transform(images.begin(), images.end(), converted_imgs.begin(), [](const QImage& img) {
+      return gif::Image{img.constBits(), static_cast<std::size_t>(img.sizeInBytes()),
+                        static_cast<unsigned short>(img.width()),
+                        static_cast<unsigned short>(img.height()),
+                        static_cast <unsigned char>(img.depth()),
+                        img.hasAlphaChannel()};
+    });
+    gif::write_to_gif(converted_imgs, save_file.toStdString());
+    accept();
+  }
+}

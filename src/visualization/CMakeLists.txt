@@ -44,4 +44,4 @@ add_executable(
   view.h
 )
 
-target_link_libraries(${APP_NAME} PRIVATE Qt5::Widgets cell_board)
+target_link_libraries(${APP_NAME} PRIVATE Qt5::Widgets cell_board gif_generator)
