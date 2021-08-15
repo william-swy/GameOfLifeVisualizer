@@ -12,7 +12,7 @@
 
 namespace gif {
   // Some private helper functions
-  //namespace {
+  // namespace {
   //  void gif_append_number_hex(std::vector<char>& bin_data, unsigned short num) noexcept {
   //    bin_data.push_back(static_cast<char>(static_cast<unsigned int>(num) & 0x00FF));
   //    bin_data.push_back(static_cast<char>((static_cast<unsigned int>(num) >> 8) & 0x00FF));
@@ -105,16 +105,16 @@ namespace gif {
   //}  // namespace
 
   // Consists of three steps: Write the header, write all the images and write the EOF
-  void write_to_gif(const std::vector<Image>& image_sequence,
+  void write_to_gif(const std::vector<ImageFrame>& image_sequence,
                     const std::string& file_name) noexcept {
-    //std::vector<char> bin_data;
+    // std::vector<char> bin_data;
 
     //// Since it is assumed that each image has same dimensions and format, thus the first image is
     //// used to get information about the entire list of images.
-    //gif_start_data(bin_data, image_sequence[0].width, image_sequence[0].height);
+    // gif_start_data(bin_data, image_sequence[0].width, image_sequence[0].height);
 
     //// Write each image to file
-    //for (std::size_t img_idx = 0; img_idx < image_sequence.size(); img_idx++) {
+    // for (std::size_t img_idx = 0; img_idx < image_sequence.size(); img_idx++) {
     //  if (img_idx == 0) {
     //    gif_image_data(bin_data, image_sequence[img_idx]);
     //  } else {
@@ -123,14 +123,15 @@ namespace gif {
     //}
 
     //// Write to file
-    //std::ofstream output_file(file_name, std::ios::binary);
-    //std::ostreambuf_iterator<char> output(output_file);
-    //std::copy(bin_data.begin(), bin_data.end(), output);
+    // std::ofstream output_file(file_name, std::ios::binary);
+    // std::ostreambuf_iterator<char> output(output_file);
+    // std::copy(bin_data.begin(), bin_data.end(), output);
     int delay = 100;
     std::size_t width = image_sequence[0].width;
     std::size_t height = image_sequence[0].height;
     GifWriter g;
     GifBegin(&g, file_name.data(), width, height, delay);
+//#pragma omp parallel for
     for (const auto& img : image_sequence) {
       GifWriteFrame(&g, img.pixel_data.data(), width, height, delay);
     }

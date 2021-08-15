@@ -8,7 +8,7 @@
 #include "colour_kd_tree.h"
 
 namespace gif {
-  //namespace {
+  // namespace {
   //  void threshold_no_pixel_match(std::vector<char>& buffer, std::size_t idx,
   //                                std::tuple<int, int, int> colour,
   //                                const colour_kd_tree::ColourKDTree& tree) noexcept {
@@ -60,14 +60,15 @@ namespace gif {
   //    return buffer;
   //  }
   //}  // namespace
-  Image::Image(const unsigned char* byte_data, std::size_t num_bytes, unsigned short width,
-               unsigned short height, unsigned char depth, bool has_alpha)
-      : pixel_data(), width(width), height(height), depth(depth), has_alpha(has_alpha) {
+  ImageFrame::ImageFrame(const unsigned char* byte_data, std::size_t num_bytes,
+                         unsigned short width, unsigned short height, ImageFormat format)
+      : width(width), height(height), format(format) {
+      //depth = format == ImageFormat::RGB24 ? 
     pixel_data.resize(num_bytes);
     std::memcpy(pixel_data.data(), byte_data, num_bytes);
   }
 
-  //std::vector<char> Image::LZW_compress() const noexcept {
+  // std::vector<char> Image::LZW_compress() const noexcept {
   //  const std::size_t num_pixels = width * height;
   //  colour_kd_tree::ColourKDTree tree(pixel_data, num_pixels, depth);
   //  std::vector<char> pixel_buffer(pixel_data.size(), 0);
@@ -75,7 +76,7 @@ namespace gif {
   //  return pixel_buffer;
   //}
 
-  //std::vector<char> Image::LZW_compress(const Image& prev_img) const noexcept {
+  // std::vector<char> Image::LZW_compress(const Image& prev_img) const noexcept {
   //  const std::size_t num_pixels = num_changed_pixels(prev_img);
   //  colour_kd_tree::ColourKDTree tree{pixel_data, num_pixels, depth};
   //  std::vector<char> pixel_buffer(pixel_data.size(), 0);
@@ -83,7 +84,7 @@ namespace gif {
   //  return pixel_buffer;
   //}
 
-  //std::size_t Image::num_changed_pixels(const Image& prev_img) const noexcept {
+  // std::size_t Image::num_changed_pixels(const Image& prev_img) const noexcept {
   //  std::size_t num_changed = 0;
   //  // Alpha component means 4 bytes per pixel while no alpha means 3 bytes per pixel
   //  std::size_t step_size = has_alpha ? 4 : 3;

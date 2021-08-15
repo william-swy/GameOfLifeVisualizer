@@ -1,13 +1,14 @@
-# Test suite for cell board
-
-include(CTest)
+# Test suites
 
 find_package(Catch2 REQUIRED)
 
-set(TEST_NAME test_cell_board)
-set(TEST_SOURCES cell_board_test.cpp)
+# Test suite
+add_executable(
+  test_suite cell_board_tests/cell_board_test.cpp gif_generator_tests/gif_writer_test.cpp
+             gif_generator_tests/image_formats_test.cpp test_main.cpp
+)
+target_link_libraries(test_suite PRIVATE cell_board gif_generator Catch2::Catch2)
+target_compile_features(test_suite PRIVATE cxx_std_20)
 
-add_executable(${TEST_NAME} ${TEST_SOURCES})
-target_link_libraries(${TEST_NAME} PRIVATE cell_board Catch2::Catch2)
-
-add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+include(CTest)
+add_test(test_suite test_suite)

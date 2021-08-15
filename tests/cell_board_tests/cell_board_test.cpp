@@ -1,5 +1,3 @@
-#define CATCH_CONFIG_MAIN
-
 #include "cell_board.h"
 
 #include <array>
