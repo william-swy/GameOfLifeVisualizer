@@ -1,31 +1,27 @@
 #pragma once
 
+#include "RGB_pixel.h"
+
 // Enumerations of image formats
 namespace gif {
-  // Original format of image
-  enum class ImageFormat {
-    RGB24,  // Red, Green, Blue. 8 bits each
-    ARGB32  // Alpha, Red, Green, Blue. 8 bits each
-  };
+  namespace image {
+    // Target format for image
+    enum class TargetFormat {
+      RGB12,  // Red, Green, Blue 4 bits each
+      RGB16,  // Red, Green, Blue, 5, 6, 5 bits respectively
+      RGB24   // Red, Green, Blue 8 bits each
+    };
 
-  // Target format for image
-  enum class TargetFormat {
-    RGB12,  // Red, Green, Blue 4 bits each
-    RGBA16  // Red, Green, Blue, Alpha 4 bits each
-  };
+    inline unsigned int RGB24(const RGBPixel& pixel) noexcept { return 0; };
 
-  unsigned short RGB24_to_RGB12(unsigned char red, unsigned char green,
-                                unsigned char blue) noexcept;
+    // Returns the value of the pixel interpreted in RGB format where each channel is 4 bits. The
+    // return value is interpreted as 0x00000RGB
+    inline unsigned int RGB12(const RGBPixel& pixel) noexcept {
+      { return ((pixel.red >> 4) << 8) | (pixel.green & 0xf0) | (pixel.blue >> 4); }
+    }
 
-  // The alpha channel is set at a default of 255 such that conversions can
-  // be made from pixel formats without alpha channel to pixel formats with alpha channel. This
-  // value can be overridden for a custom value.
-  unsigned short RGB24_to_RGBA16(unsigned char red, unsigned char green, unsigned char blue,
-                                 unsigned char alpha = 225) noexcept;
+    inline unsigned int RGB16(const RGBPixel& pixel) noexcept { return 0; }
 
-  unsigned short ARGB32_to_RGB12(unsigned char alpha, unsigned char red, unsigned char green,
-                                 unsigned char blue) noexcept;
+  }  // namespace image
 
-  unsigned short ARGB32_to_RGBA15(unsigned char alpha, unsigned char red, unsigned char green,
-                                  unsigned char blue) noexcept;
 }  // namespace gif

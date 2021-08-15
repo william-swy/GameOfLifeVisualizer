@@ -11,7 +11,7 @@ add_library(
   gif_generator.h
   gif_writer.cpp
   gif_writer.h
-  "image/image_formats.cpp"
+  
   "image/image_formats.h"
   "image/image_frame.cpp"
   "image/image_frame.h"
@@ -19,7 +19,7 @@ add_library(
   "image/ppn.h"
   "image/ppn_bin.cpp"
   "image/ppn_bin.h"
-)
+ "image/RGB_pixel.h" "image/RGB_pixel.cpp")
 
 target_include_directories(gif_generator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

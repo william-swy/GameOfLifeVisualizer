@@ -4,18 +4,23 @@
 
 #include "image_formats.h"
 #include "image_frame.h"
+#include "RGB_pixel.h"
+#include "ppn_bin.h"
 
 namespace gif {
+  namespace image {
+    class ColourPallete {
+    public:
+      ColourPallete() = default;
 
-  class ColourPallete {
-  public:
-    ColourPallete() = default;
+      ColourPallete(std::vector<Bin>& bins, std::vector<std::size_t>& valid_indicies) noexcept;
 
-    ColourPallete(std::vector<unsigned char>& data, bool has_alpha);
+      std::vector<RGBPixel> data;
 
-    std::size_t step_size;
-    std::vector<unsigned char> data;
-  };
+      private:
+      void move_pixels(int low, int high, int dimension) noexcept;
+    };
 
-  ColourPallete quantize(ImageFrame& img, TargetFormat format);
+  }  // namespace image
+
 }  // namespace gif

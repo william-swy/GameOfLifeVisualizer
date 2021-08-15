@@ -5,16 +5,17 @@
 
 #include "colour_pallete.h"
 #include "image_formats.h"
+#include "image_frame.h"
 #include "ppn_bin.h"
 
 namespace gif {
-  namespace ppn {
+
+  namespace image {
     class PPNThreshold {
     public:
       PPNThreshold() = default;
 
-      PPNThreshold(const std::vector<unsigned char>& data, ImageFormat img_format,
-                   TargetFormat target_format) noexcept;
+      PPNThreshold(const ImageFrame& img, TargetFormat target_format) noexcept;
 
       ColourPallete merge_to_size(std::size_t size) noexcept;
 
@@ -52,7 +53,7 @@ namespace gif {
       std::size_t parent(std::size_t idx) const noexcept;
     };
 
-    std::vector<char> ppn_threshold(std::vector<unsigned char>& data, ImageFormat img_format,
+    std::vector<char> ppn_threshold(std::vector<unsigned char>& data, TargetFormat img_format,
                                     TargetFormat target_format) noexcept;
-  }  // namespace ppn
+  }  // namespace image
 }  // namespace gif

@@ -4,7 +4,7 @@
 #include <limits>
 
 namespace gif {
-  namespace ppn {
+  namespace image {
     double MSE_increase(const Bin& bin1, const Bin& bin2) noexcept {
       double mse = 0.0;
 
@@ -17,11 +17,8 @@ namespace gif {
       const auto blue_diff = std::max(bin1.blue_channel_avg, bin2.blue_channel_avg)
                              - std::min(bin1.blue_channel_avg, bin2.blue_channel_avg);
 
-      const auto alpha_diff = std::max(bin1.alpha_channel_avg, bin2.alpha_channel_avg)
-                              - std::min(bin1.alpha_channel_avg, bin2.alpha_channel_avg);
-
-      mse += static_cast<double>(red_diff * red_diff + green_diff * green_diff
-                                 + blue_diff * blue_diff + alpha_diff * alpha_diff);
+      mse += (red_diff * red_diff + green_diff * green_diff
+                                 + blue_diff * blue_diff);
 
       mse *= static_cast<double>(bin1.pixel_count * bin2.pixel_count)
              / static_cast<double>(bin1.pixel_count + bin2.pixel_count);
@@ -31,10 +28,9 @@ namespace gif {
 
     Bin::Bin() noexcept
         : idx(0),
-          alpha_channel_avg(0),
-          red_channel_avg(0),
-          green_channel_avg(0),
-          blue_channel_avg(0),
+          red_channel_avg(0.0),
+          green_channel_avg(0.0),
+          blue_channel_avg(0.0),
           pixel_count(0),
           prev_idx(-1),
           next_idx(-1),
@@ -52,9 +48,6 @@ namespace gif {
             / (pixel_count + other.pixel_count);
       blue_channel_avg
           = (blue_channel_avg * pixel_count + other.blue_channel_avg * other.pixel_count)
-            / (pixel_count + other.pixel_count);
-      alpha_channel_avg
-          = (alpha_channel_avg * pixel_count + other.alpha_channel_avg * other.pixel_count)
             / (pixel_count + other.pixel_count);
       pixel_count += other.pixel_count;
     }

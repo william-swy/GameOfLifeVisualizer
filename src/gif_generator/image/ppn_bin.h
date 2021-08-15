@@ -3,18 +3,16 @@
 #include <cstddef>
 
 namespace gif {
-  namespace ppn {
+  namespace image {
     class Bin {
     public:
       Bin() noexcept;
 
       std::size_t idx;
 
-      // If there is no alpha component, the alpha channel sum should be 0.
-      unsigned long long alpha_channel_avg;  // Alpha average
-      unsigned long long red_channel_avg;    // Red average
-      unsigned long long green_channel_avg;  // Green average
-      unsigned long long blue_channel_avg;   // Blue average
+      double red_channel_avg;    // Red average
+      double green_channel_avg;  // Green average
+      double blue_channel_avg;   // Blue average
       unsigned long long pixel_count;        // Total count
 
       // For indicies, a negative value implies that the value is not valid. Values should be

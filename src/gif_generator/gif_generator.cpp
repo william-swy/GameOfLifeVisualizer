@@ -126,15 +126,15 @@ namespace gif {
     // std::ofstream output_file(file_name, std::ios::binary);
     // std::ostreambuf_iterator<char> output(output_file);
     // std::copy(bin_data.begin(), bin_data.end(), output);
-    int delay = 100;
-    std::size_t width = image_sequence[0].width;
-    std::size_t height = image_sequence[0].height;
-    GifWriter g;
-    GifBegin(&g, file_name.data(), width, height, delay);
-//#pragma omp parallel for
-    for (const auto& img : image_sequence) {
-      GifWriteFrame(&g, img.pixel_data.data(), width, height, delay);
-    }
-    GifEnd(&g);
+//    int delay = 100;
+//    std::size_t width = image_sequence[0].width;
+//    std::size_t height = image_sequence[0].height;
+//    GifWriter g;
+//    GifBegin(&g, file_name.data(), width, height, delay);
+////#pragma omp parallel for
+//    for (const auto& img : image_sequence) {
+//      GifWriteFrame(&g, img.pixel_data.data(), width, height, delay);
+//    }
+//    GifEnd(&g);
   }
 }  // namespace gif

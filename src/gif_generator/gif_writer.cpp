@@ -64,7 +64,7 @@ void gif::GifWriter::write_image_frame(const ImageFrame& img) noexcept {
   append_data(top_pos);                    // Image top position
   append_data(img.width);                  // Image width
   append_data(img.height);                 // Image height
-  buffer.push_back(0x80 + img.depth - 1);  // Local colour table present. 2^depth entries
+  buffer.push_back(0x80 + img.depth - 1);  // Local colour table present. 2^depth entries TODO
 }
 
 void gif::GifWriter::write_end_data() noexcept {

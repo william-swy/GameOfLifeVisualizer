@@ -4,65 +4,81 @@
 #include <climits>
 
 namespace gif {
-  namespace ppn {
+  namespace image {
 
-    std::vector<char> ppn_threshold(std::vector<unsigned char>& data, ImageFormat img_format,
+    std::vector<char> ppn_threshold(std::vector<unsigned char>& data, TargetFormat img_format,
                                     TargetFormat target_format) noexcept {
       return std::vector<char>();
     }
 
-    PPNThreshold::PPNThreshold(const std::vector<unsigned char>& data, ImageFormat img_format,
-                               TargetFormat target_format) noexcept {
-      const std::size_t bin_count = img_format == ImageFormat::RGB24 ? 4096 : 65536;
-      const std::size_t data_step_size = img_format == ImageFormat::RGB24 ? 3 : 4;
-      has_alpha = img_format == ImageFormat::RGB24;
+    namespace {
+      inline void create_bins(std::vector<Bin>& bins, const ImageFrame& img,
+                              TargetFormat format) noexcept {
+        // Attempt reduce the amount of conditionals in a high iteration loop
+        if (format == TargetFormat::RGB12) {
+          for (const auto& pixel : img.pixel_data) {
+            const auto index = RGB12(pixel);
+            bins[index].red_channel_avg += pixel.red;
+            bins[index].green_channel_avg += pixel.green;
+            bins[index].blue_channel_avg += pixel.blue;
+            bins[index].pixel_count++;
+          }
+        } else if (format == TargetFormat::RGB16) {
+          for (const auto& pixel : img.pixel_data) {
+            const auto index = RGB16(pixel);
+            bins[index].red_channel_avg += pixel.red;
+            bins[index].green_channel_avg += pixel.green;
+            bins[index].blue_channel_avg += pixel.blue;
+            bins[index].pixel_count++;
+          }
+        } else {
+          for (const auto& pixel : img.pixel_data) {
+            const auto index = RGB24(pixel);
+            bins[index].red_channel_avg += pixel.red;
+            bins[index].green_channel_avg += pixel.green;
+            bins[index].blue_channel_avg += pixel.blue;
+            bins[index].pixel_count++;
+          }
+        }
+      }
+
+      // Compute the average pixel value of each bin
+      inline void bin_average(std::vector<Bin>& bins) noexcept {
+        std::for_each(bins.begin(), bins.end(), [](Bin& bin) -> void {
+          if (bin.pixel_count > 0) {
+            const auto scaling_fac = 1.0 / static_cast<double>(bin.pixel_count);
+            bin.red_channel_avg *= scaling_fac;
+            bin.green_channel_avg *= scaling_fac;
+            bin.blue_channel_avg *= scaling_fac;
+          }
+        });
+      }
+
+      // Remove bins where pixel count is zero
+      inline void remove_empty_bins(std::vector<Bin>& bins) noexcept {
+        // Move all empty bins to the end of the vector and remove
+        std::size_t max_bins = 0;
+        for (std::size_t idx = 0; idx < bins.size(); ++idx) {
+          const auto bin = bins[idx];
+          if (bin.pixel_count != 0) {
+            bins[max_bins++] = bin;
+          }
+        }
+        bins.resize(max_bins + 1);
+      }
+    }  // namespace
+
+    PPNThreshold::PPNThreshold(const ImageFrame& img, TargetFormat target_format) noexcept {
+      constexpr std::size_t bin_count = 4096;
       bins = std::vector<Bin>(bin_count);
 
-      for (std::size_t idx = 0; idx < data.size(); idx += data_step_size) {
-        // For now assume branch predictor is very good
-        if (img_format == ImageFormat::RGB24 && target_format == TargetFormat::RGB12) {
-          const auto red = data[idx + 0];
-          const auto green = data[idx + 1];
-          const auto blue = data[idx + 2];
-          const auto index = RGB24_to_RGB12(red, green, blue);
-
-          bins[index].red_channel_avg += red;
-          bins[index].green_channel_avg += green;
-          bins[index].blue_channel_avg += blue;
-          bins[index].pixel_count++;
-
-        } else if (img_format == ImageFormat::RGB24 && target_format == TargetFormat::RGBA16) {
-          // TODO
-        } else if (img_format == ImageFormat::ARGB32 && target_format == TargetFormat::RGB12) {
-          // TODO
-        } else if (img_format == ImageFormat::ARGB32 && target_format == TargetFormat::RGBA16) {
-          // TODO
-        }
-        // Execution should never reach here
-      }
+      create_bins(bins, img, target_format);
 
       // Compute average
-      // Average is computed regardless if there is an alpha component or not as the average of a
-      // sum of zero is still zero.
-      std::for_each(bins.begin(), bins.end(), [](Bin& bin) -> void {
-        if (bin.pixel_count > 0) {
-          const auto scaling_fac = 1.0 / static_cast<double>(bin.pixel_count);
-          bin.alpha_channel_avg *= scaling_fac;
-          bin.red_channel_avg *= scaling_fac;
-          bin.green_channel_avg *= scaling_fac;
-          bin.blue_channel_avg *= scaling_fac;
-        }
-      });
+      bin_average(bins);
 
-      // Move all empty bins to the end of the vector and remove
-      std::size_t max_bins = 0;
-      for (std::size_t idx = 0; idx < bins.size(); ++idx) {
-        const auto bin = bins[idx];
-        if (bin.pixel_count != 0) {
-          bins[max_bins++] = bin;
-        }
-      }
-      bins.resize(max_bins + 1);
+      // Remove empty bins
+      remove_empty_bins(bins);
 
       // Connect next and previous indicies and set MSE
       for (std::size_t idx = 0; idx < bins.size() - 1; idx++) {
@@ -86,7 +102,7 @@ namespace gif {
         merge();
       }
 
-      return ColourPallete();
+      return ColourPallete(bins, bin_heap);
     }
 
     void PPNThreshold::merge() noexcept {
@@ -183,5 +199,5 @@ namespace gif {
     std::size_t PPNThreshold::right_child(std::size_t idx) const noexcept { return 2 * (idx + 1); }
 
     std::size_t PPNThreshold::parent(std::size_t idx) const noexcept { return (idx - 1) / 2; }
-  }  // namespace ppn
+  }  // namespace image
 }  // namespace gif
