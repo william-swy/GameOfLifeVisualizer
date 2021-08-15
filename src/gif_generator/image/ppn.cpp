@@ -66,6 +66,7 @@ namespace gif {
 
       // Connect next and previous indicies and set MSE
       for (std::size_t idx = 0; idx < bins.size() - 1; idx++) {
+        bins[idx].idx = idx;
         bins[idx].next_idx = idx + 1;
         bins[idx + 1].prev_idx = idx;
         bins[idx].distance_to_next = MSE_increase(bins[idx], bins[idx + 1]);
@@ -80,40 +81,30 @@ namespace gif {
       build_heap();
     }
 
-    void PPNThreshold::merge_to_size(std::size_t size) noexcept {
+    ColourPallete PPNThreshold::merge_to_size(std::size_t size) noexcept {
       while (bin_heap.size() > size) {
         merge();
       }
+
+      return ColourPallete();
     }
 
     void PPNThreshold::merge() noexcept {
       auto& least_bin = bins[bin_heap[0]];
       auto& prev_least_bin = bins[least_bin.prev_idx];
       const auto& merge_bin = bins[least_bin.next_idx];
+      auto& merge_bin_next = bins[merge_bin.next_idx];
 
       // Update values for least_bin
-      least_bin.red_channel_avg = (least_bin.red_channel_avg * least_bin.pixel_count
-                                   + merge_bin.red_channel_avg * merge_bin.pixel_count)
-                                  / (least_bin.pixel_count + merge_bin.pixel_count);
-
-      least_bin.green_channel_avg = (least_bin.green_channel_avg * least_bin.pixel_count
-                                     + merge_bin.green_channel_avg * merge_bin.pixel_count)
-                                    / (least_bin.pixel_count + merge_bin.pixel_count);
-
-      least_bin.blue_channel_avg = (least_bin.blue_channel_avg * least_bin.pixel_count
-                                    + merge_bin.blue_channel_avg * merge_bin.pixel_count)
-                                   / (least_bin.pixel_count + merge_bin.pixel_count);
-
-      least_bin.alpha_channel_avg = (least_bin.alpha_channel_avg * least_bin.pixel_count
-                                     + merge_bin.alpha_channel_avg * merge_bin.pixel_count)
-                                    / (least_bin.pixel_count + merge_bin.pixel_count);
-
-      least_bin.pixel_count += merge_bin.pixel_count;
-
-      least_bin.distance_to_next = MSE_increase(least_bin, bins[merge_bin.next_idx]);
+      least_bin.add_bin(merge_bin);
+      least_bin.distance_to_next = MSE_increase(least_bin, merge_bin_next);
 
       // Update values for prev_least_bin
       prev_least_bin.distance_to_next = MSE_increase(least_bin, prev_least_bin);
+
+      // Reconnect bins
+      least_bin.next_idx = merge_bin.next_idx;
+      merge_bin_next.prev_idx = least_bin.idx;
 
       // Remove merged bin from heap
       const auto merge_bin_idx = merge_bin.heap_idx;

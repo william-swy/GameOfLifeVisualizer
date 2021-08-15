@@ -1,10 +1,14 @@
 #pragma once
 
+#include <cstddef>
+
 namespace gif {
   namespace ppn {
     class Bin {
     public:
       Bin() noexcept;
+
+      std::size_t idx;
 
       // If there is no alpha component, the alpha channel sum should be 0.
       unsigned long long alpha_channel_avg;  // Alpha average
@@ -24,6 +28,8 @@ namespace gif {
       double distance_to_next;
 
       bool operator<(const Bin& other) const noexcept;
+
+      void add_bin(const Bin& other) noexcept;
     };
 
     // Computes the increaase in mean squared error if bin1 and bin2 are merged.

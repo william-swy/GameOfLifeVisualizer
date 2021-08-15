@@ -28,24 +28,4 @@ namespace gif {
 
   unsigned short ARGB32_to_RGBA15(unsigned char alpha, unsigned char red, unsigned char green,
                                   unsigned char blue) noexcept;
-
-  class Pixel {
-  public:
-    Pixel(unsigned char red, unsigned char green, unsigned char blue) noexcept;
-
-    Pixel(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) noexcept;
-
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
-    unsigned char alpha;
-    bool has_alpha;
-
-    // Converts RGB channels of 8 bits each to RGB channels of 4 bits each. Note that it is assumed
-    // that the pixel is in RGB format where each channel is 8 bits. It becomes the users
-    // responsibility to ensure that this is true or at least the conversion is safe. The original
-    // pixel is not mutated but the converted pixel is returned in the format of 0x0RGB which is
-    // also the size of a unsigned short.
-    unsigned short RGB24_to_RGB12() const noexcept;
-  };
 }  // namespace gif

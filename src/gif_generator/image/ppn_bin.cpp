@@ -23,13 +23,15 @@ namespace gif {
       mse += static_cast<double>(red_diff * red_diff + green_diff * green_diff
                                  + blue_diff * blue_diff + alpha_diff * alpha_diff);
 
-      mse *= static_cast<double>(bin1.pixel_count * bin2.pixel_count) / static_cast<double>(bin1.pixel_count + bin2.pixel_count);
+      mse *= static_cast<double>(bin1.pixel_count * bin2.pixel_count)
+             / static_cast<double>(bin1.pixel_count + bin2.pixel_count);
 
       return mse;
     }
 
     Bin::Bin() noexcept
-        : alpha_channel_avg(0),
+        : idx(0),
+          alpha_channel_avg(0),
           red_channel_avg(0),
           green_channel_avg(0),
           blue_channel_avg(0),
@@ -41,6 +43,20 @@ namespace gif {
 
     bool Bin::operator<(const Bin& other) const noexcept {
       return distance_to_next < other.distance_to_next;
+    }
+    void Bin::add_bin(const Bin& other) noexcept {
+      red_channel_avg = (red_channel_avg * pixel_count + other.red_channel_avg * other.pixel_count)
+                        / (pixel_count + other.pixel_count);
+      green_channel_avg
+          = (green_channel_avg * pixel_count + other.green_channel_avg * other.pixel_count)
+            / (pixel_count + other.pixel_count);
+      blue_channel_avg
+          = (blue_channel_avg * pixel_count + other.blue_channel_avg * other.pixel_count)
+            / (pixel_count + other.pixel_count);
+      alpha_channel_avg
+          = (alpha_channel_avg * pixel_count + other.alpha_channel_avg * other.pixel_count)
+            / (pixel_count + other.pixel_count);
+      pixel_count += other.pixel_count;
     }
   }  // namespace ppn
 }  // namespace gif

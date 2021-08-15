@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-#include "image_frame.h"
+#include "image/image_frame.h"
 
 namespace gif {
   class GifWriter {

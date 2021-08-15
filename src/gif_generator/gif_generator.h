@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "image_frame.h"
+#include "image/image_frame.h"
 
 namespace gif {
   // Assumes that each Image is of the same width and height all either include or exclude alpha
