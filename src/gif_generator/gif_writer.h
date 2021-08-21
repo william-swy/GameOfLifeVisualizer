@@ -13,7 +13,7 @@ namespace gif {
 
     void write_start_data(unsigned short width, unsigned short height) noexcept;
 
-    void write_image_frame(const ImageFrame& img) noexcept;
+    void write_image_frame(const image::ImageFrame& img) noexcept;
 
     void write_end_data() noexcept;
 

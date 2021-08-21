@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "colour_pallete.h"
-#include "image_formats.h"
 #include "image_frame.h"
 #include "ppn_bin.h"
 

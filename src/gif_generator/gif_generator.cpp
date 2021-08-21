@@ -105,7 +105,7 @@ namespace gif {
   //}  // namespace
 
   // Consists of three steps: Write the header, write all the images and write the EOF
-  void write_to_gif(const std::vector<ImageFrame>& image_sequence,
+  void write_to_gif(const std::vector<image::ImageFrame>& image_sequence,
                     const std::string& file_name) noexcept {
     // std::vector<char> bin_data;
 

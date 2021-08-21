@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "image_formats.h"
 #include "image_frame.h"
 #include "RGB_pixel.h"
 #include "ppn_bin.h"

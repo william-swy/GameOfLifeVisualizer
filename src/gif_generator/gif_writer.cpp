@@ -44,7 +44,7 @@ void gif::GifWriter::write_start_data(unsigned short width, unsigned short heigh
   buffer.push_back(0x0);
 }
 
-void gif::GifWriter::write_image_frame(const ImageFrame& img) noexcept {
+void gif::GifWriter::write_image_frame(const image::ImageFrame& img) noexcept {
   // Graphics control extension
   constexpr unsigned short delay_time = 100;  // Time in hundredth of second
   constexpr unsigned char trans_idx = 0;

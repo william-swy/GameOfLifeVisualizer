@@ -17,26 +17,26 @@ namespace gif {
         // Attempt reduce the amount of conditionals in a high iteration loop
         if (format == TargetFormat::RGB12) {
           for (const auto& pixel : img.pixel_data) {
-            const auto index = RGB12(pixel);
-            bins[index].red_channel_avg += pixel.red;
-            bins[index].green_channel_avg += pixel.green;
-            bins[index].blue_channel_avg += pixel.blue;
+            const auto&[index, new_pixel] = pixel.RGB12();
+            bins[index].red_channel_avg += new_pixel.red;
+            bins[index].green_channel_avg += new_pixel.green;
+            bins[index].blue_channel_avg += new_pixel.blue;
             bins[index].pixel_count++;
           }
         } else if (format == TargetFormat::RGB16) {
           for (const auto& pixel : img.pixel_data) {
-            const auto index = RGB16(pixel);
-            bins[index].red_channel_avg += pixel.red;
-            bins[index].green_channel_avg += pixel.green;
-            bins[index].blue_channel_avg += pixel.blue;
+            const auto& [index, new_pixel] = pixel.RGB16();
+            bins[index].red_channel_avg += new_pixel.red;
+            bins[index].green_channel_avg += new_pixel.green;
+            bins[index].blue_channel_avg += new_pixel.blue;
             bins[index].pixel_count++;
           }
         } else {
           for (const auto& pixel : img.pixel_data) {
-            const auto index = RGB24(pixel);
-            bins[index].red_channel_avg += pixel.red;
-            bins[index].green_channel_avg += pixel.green;
-            bins[index].blue_channel_avg += pixel.blue;
+            const auto& [index, new_pixel] = pixel.RGB24();
+            bins[index].red_channel_avg += new_pixel.red;
+            bins[index].green_channel_avg += new_pixel.green;
+            bins[index].blue_channel_avg += new_pixel.blue;
             bins[index].pixel_count++;
           }
         }
@@ -64,7 +64,7 @@ namespace gif {
             bins[max_bins++] = bin;
           }
         }
-        bins.resize(max_bins + 1);
+        bins.resize(max_bins);
       }
     }  // namespace
 
