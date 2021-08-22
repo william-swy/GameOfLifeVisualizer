@@ -16,6 +16,7 @@ namespace gif {
 
       PPNThreshold(const ImageFrame& img, TargetFormat target_format) noexcept;
 
+      // Size must be greater than zero
       ColourPallete merge_to_size(std::size_t size) noexcept;
 
     private:

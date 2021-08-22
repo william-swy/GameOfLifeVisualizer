@@ -5,7 +5,8 @@
 #include <utility>
 
 // Check that the start data of the GIF encoding is correct
-void check_start_data(const std::vector<unsigned char>& data, unsigned short width, unsigned short height) {
+void check_start_data(const std::vector<unsigned char>& data, unsigned short width,
+                      unsigned short height) {
   constexpr std::size_t expected_len = 38;
   REQUIRE(data.size() == expected_len);
 

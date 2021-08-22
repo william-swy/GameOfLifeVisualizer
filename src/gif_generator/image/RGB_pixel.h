@@ -1,6 +1,8 @@
 #pragma once
 
+#pragma warning(push, 0)  // System header should have warnings
 #include <tuple>
+#pragma warning(pop)
 
 namespace gif {
   namespace image {

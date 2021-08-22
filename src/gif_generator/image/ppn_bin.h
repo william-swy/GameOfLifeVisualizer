@@ -2,6 +2,7 @@
 
 #include <cstddef>
 
+
 namespace gif {
   namespace image {
     class Bin {
@@ -10,10 +11,10 @@ namespace gif {
 
       std::size_t idx;
 
-      double red_channel_avg;    // Red average
-      double green_channel_avg;  // Green average
-      double blue_channel_avg;   // Blue average
-      unsigned long long pixel_count;        // Total count
+      double red_channel_avg;          // Red average
+      double green_channel_avg;        // Green average
+      double blue_channel_avg;         // Blue average
+      unsigned long long pixel_count;  // Total count
 
       // For indicies, a negative value implies that the value is not valid. Values should be
       // positive to represent a valid value.
@@ -32,5 +33,5 @@ namespace gif {
 
     // Computes the increaase in mean squared error if bin1 and bin2 are merged.
     double MSE_increase(const Bin& bin1, const Bin& bin2) noexcept;
-  }  // namespace ppn
+  }  // namespace image
 }  // namespace gif

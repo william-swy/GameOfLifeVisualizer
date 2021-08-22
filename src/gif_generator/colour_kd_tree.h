@@ -2,7 +2,9 @@
 
 #include <array>
 #include <vector>
+#pragma warning(push, 0)  // System header should have warnings
 #include <tuple>
+#pragma warning(pop)
 
 namespace colour_kd_tree {
   class ColourKDTree {

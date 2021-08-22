@@ -1,7 +1,7 @@
 #include "ppn.h"
 
 #include <algorithm>
-#include <climits>
+#include <limits>
 
 namespace gif {
   namespace image {
@@ -17,7 +17,7 @@ namespace gif {
         // Attempt reduce the amount of conditionals in a high iteration loop
         if (format == TargetFormat::RGB12) {
           for (const auto& pixel : img.pixel_data) {
-            const auto&[index, new_pixel] = pixel.RGB12();
+            const auto& [index, new_pixel] = pixel.RGB12();
             bins[index].red_channel_avg += new_pixel.red;
             bins[index].green_channel_avg += new_pixel.green;
             bins[index].blue_channel_avg += new_pixel.blue;
@@ -83,8 +83,8 @@ namespace gif {
       // Connect next and previous indicies and set MSE
       for (std::size_t idx = 0; idx < bins.size() - 1; idx++) {
         bins[idx].idx = idx;
-        bins[idx].next_idx = idx + 1;
-        bins[idx + 1].prev_idx = idx;
+        bins[idx].next_idx = static_cast<long long>(idx + 1);
+        bins[idx + 1].prev_idx = static_cast<long long>(idx);
         bins[idx].distance_to_next = MSE_increase(bins[idx], bins[idx + 1]);
       }
 
@@ -107,29 +107,38 @@ namespace gif {
 
     void PPNThreshold::merge() noexcept {
       auto& least_bin = bins[bin_heap[0]];
-      auto& prev_least_bin = bins[least_bin.prev_idx];
-      const auto& merge_bin = bins[least_bin.next_idx];
-      auto& merge_bin_next = bins[merge_bin.next_idx];
+      // Next_idx should never be -1. Always 0 or greater.
+      const auto& merge_bin = bins[static_cast<std::size_t>(least_bin.next_idx)];
 
       // Update values for least_bin
       least_bin.add_bin(merge_bin);
-      least_bin.distance_to_next = MSE_increase(least_bin, merge_bin_next);
-
-      // Update values for prev_least_bin
-      prev_least_bin.distance_to_next = MSE_increase(least_bin, prev_least_bin);
+      if (merge_bin.next_idx != -1) {
+        auto& merge_bin_next = bins[static_cast<std::size_t>(merge_bin.next_idx)];
+        least_bin.distance_to_next = MSE_increase(least_bin, merge_bin_next);
+        // Reconnect next next bin
+        merge_bin_next.prev_idx = static_cast<long long>(least_bin.idx);
+      } else {
+        least_bin.distance_to_next = std::numeric_limits<double>::max();
+      }
 
       // Reconnect bins
       least_bin.next_idx = merge_bin.next_idx;
-      merge_bin_next.prev_idx = least_bin.idx;
 
       // Remove merged bin from heap
       const auto merge_bin_idx = merge_bin.heap_idx;
-      swap_elem(merge_bin.heap_idx, bin_heap.size() - 1);
+      // heap_idx should never be -1. Should always be 0 or greater
+      swap_elem(static_cast<std::size_t>(merge_bin.heap_idx), bin_heap.size() - 1);
       bin_heap.pop_back();
 
+      // Update values for prev_least_bin
+      if (least_bin.prev_idx != -1) {
+        auto& prev_least_bin = bins[static_cast<std::size_t>(least_bin.prev_idx)];
+        prev_least_bin.distance_to_next = MSE_increase(least_bin, prev_least_bin);
+        heapify_down(static_cast<std::size_t>(prev_least_bin.heap_idx));
+      }
+
       // Update heap
-      heapify_down(merge_bin_idx);
-      heapify_down(prev_least_bin.heap_idx);
+      heapify_down(static_cast<std::size_t>(merge_bin_idx));
       heapify_down(0);
     }
 
@@ -137,15 +146,17 @@ namespace gif {
       auto& first_bin = bins[bin_heap[first_idx]];
       auto& second_bin = bins[bin_heap[second_idx]];
 
-      first_bin.heap_idx = second_idx;
-      second_bin.heap_idx = first_idx;
+      first_bin.heap_idx = static_cast<long long>(second_idx);
+      second_bin.heap_idx = static_cast<long long>(first_idx);
 
       std::swap(bin_heap[first_idx], bin_heap[second_idx]);
     }
 
     void PPNThreshold::build_heap() noexcept {
-      for (long long idx = bins.size() / 2; idx >= 0; idx--) {
-        heapify_down(idx);
+      const auto upper_bound = bins.size() / 2;
+      for (std::size_t idx = 0; idx <= upper_bound; idx++) {
+        const auto effective_idx = upper_bound - idx;
+        heapify_down(effective_idx);
       }
     }
 
@@ -177,7 +188,7 @@ namespace gif {
     bool PPNThreshold::has_child(std::size_t idx) const noexcept {
       const auto left = left_child(idx);
       const auto right = right_child(idx);
-      return (left < bins.size()) || (right < bins.size());
+      return (left < bin_heap.size()) || (right < bin_heap.size());
     }
 
     std::size_t PPNThreshold::max_priority_child(std::size_t idx) const noexcept {
@@ -186,8 +197,8 @@ namespace gif {
 
       // There is a guarentee that the left child exists but there is not a guarentee that the right
       // child exists.
-      if (right < bins.size()) {
-        if (bins[right] < bins[left]) {
+      if (right < bin_heap.size()) {
+        if (bins[bin_heap[right]] < bins[bin_heap[left]]) {
           return right;
         }
       }
