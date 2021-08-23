@@ -5,12 +5,6 @@
 
 namespace gif {
   namespace image {
-
-    std::vector<char> ppn_threshold(std::vector<unsigned char>& data, TargetFormat img_format,
-                                    TargetFormat target_format) noexcept {
-      return std::vector<char>();
-    }
-
     namespace {
       inline void create_bins(std::vector<Bin>& bins, const ImageFrame& img,
                               TargetFormat format) noexcept {
@@ -80,13 +74,15 @@ namespace gif {
       // Remove empty bins
       remove_empty_bins(bins);
 
-      // Connect next and previous indicies and set MSE
+      // Connect next and previous indicies and set MSE. Size should be always greater than 0.
       for (std::size_t idx = 0; idx < bins.size() - 1; idx++) {
         bins[idx].idx = idx;
         bins[idx].next_idx = static_cast<long long>(idx + 1);
         bins[idx + 1].prev_idx = static_cast<long long>(idx);
         bins[idx].distance_to_next = MSE_increase(bins[idx], bins[idx + 1]);
       }
+      // Give last index its appropriate index
+      bins[bins.size()-1].idx = bins.size()-1;
 
       bin_heap = std::vector<std::size_t>(bins.size());
       for (std::size_t idx = 0; idx < bins.size(); idx++) {
@@ -106,39 +102,38 @@ namespace gif {
     }
 
     void PPNThreshold::merge() noexcept {
-      auto& least_bin = bins[bin_heap[0]];
-      // Next_idx should never be -1. Always 0 or greater.
-      const auto& merge_bin = bins[static_cast<std::size_t>(least_bin.next_idx)];
+      const auto& least_bin = bins[bin_heap[0]];
+      // Next_idx should never be -1. Always 0 or greater, hence safe indexing.
+      auto& merge_bin = bins[static_cast<std::size_t>(least_bin.next_idx)];
 
-      // Update values for least_bin
-      least_bin.add_bin(merge_bin);
+      // Merge the least_bin into the target merge_bin
+      merge_bin.add_bin(least_bin);
+
+      // Connect previous bin and recalculate merge cost
+      if (least_bin.prev_idx != -1) {
+        auto& least_bin_prev = bins[static_cast<std::size_t>(least_bin.prev_idx)];
+        least_bin_prev.distance_to_next = MSE_increase(least_bin_prev, merge_bin);
+        least_bin_prev.next_idx = static_cast<long long>(merge_bin.idx);
+        merge_bin.prev_idx = static_cast<long long>(least_bin_prev.idx);
+
+        // Merge cost will always increase so heapify down
+        heapify_down(static_cast<std::size_t>(least_bin_prev.heap_idx));
+      }
+
+      // Recalculate cost for merging
       if (merge_bin.next_idx != -1) {
         auto& merge_bin_next = bins[static_cast<std::size_t>(merge_bin.next_idx)];
-        least_bin.distance_to_next = MSE_increase(least_bin, merge_bin_next);
-        // Reconnect next next bin
-        merge_bin_next.prev_idx = static_cast<long long>(least_bin.idx);
+        merge_bin.distance_to_next = MSE_increase(merge_bin, merge_bin_next);
       } else {
-        least_bin.distance_to_next = std::numeric_limits<double>::max();
+        merge_bin.distance_to_next = std::numeric_limits<double>::max();
       }
 
-      // Reconnect bins
-      least_bin.next_idx = merge_bin.next_idx;
+      // Cost of merging will always increase so heapify down
+      heapify_down(static_cast<std::size_t>(merge_bin.heap_idx));
 
-      // Remove merged bin from heap
-      const auto merge_bin_idx = merge_bin.heap_idx;
-      // heap_idx should never be -1. Should always be 0 or greater
-      swap_elem(static_cast<std::size_t>(merge_bin.heap_idx), bin_heap.size() - 1);
+      // Remove least bin. heap_idx should never be -1. Should always be 0 or greater
+      swap_elem(static_cast<std::size_t>(least_bin.heap_idx), bin_heap.size() - 1);
       bin_heap.pop_back();
-
-      // Update values for prev_least_bin
-      if (least_bin.prev_idx != -1) {
-        auto& prev_least_bin = bins[static_cast<std::size_t>(least_bin.prev_idx)];
-        prev_least_bin.distance_to_next = MSE_increase(least_bin, prev_least_bin);
-        heapify_down(static_cast<std::size_t>(prev_least_bin.heap_idx));
-      }
-
-      // Update heap
-      heapify_down(static_cast<std::size_t>(merge_bin_idx));
       heapify_down(0);
     }
 

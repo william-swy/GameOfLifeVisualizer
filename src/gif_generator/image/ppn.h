@@ -52,8 +52,5 @@ namespace gif {
       // zero i.e. on the root index.
       std::size_t parent(std::size_t idx) const noexcept;
     };
-
-    std::vector<char> ppn_threshold(std::vector<unsigned char>& data, TargetFormat img_format,
-                                    TargetFormat target_format) noexcept;
   }  // namespace image
 }  // namespace gif
