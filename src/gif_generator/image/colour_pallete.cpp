@@ -2,12 +2,11 @@
 
 namespace gif {
   namespace image {
-    ColourPallete::ColourPallete(std::vector<Bin>& bins,
-                                 std::vector<std::size_t>& valid_indicies) noexcept {
-      for (const auto& idx : valid_indicies) {
-        data.emplace_back(static_cast<unsigned char>(bins[idx].red_channel_avg),
-                          static_cast<unsigned char>(bins[idx].green_channel_avg),
-                          static_cast<unsigned char>(bins[idx].blue_channel_avg));
+    ColourPallete::ColourPallete(std::vector<Bin>& bins) noexcept {
+      for (const auto& bin : bins) {
+        data.emplace_back(static_cast<unsigned char>(bin.red_channel_avg),
+                          static_cast<unsigned char>(bin.green_channel_avg),
+                          static_cast<unsigned char>(bin.blue_channel_avg));
 
         move_pixels(0, data.size() - 1, 0);
       }

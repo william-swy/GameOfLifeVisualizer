@@ -12,7 +12,7 @@ namespace gif {
     public:
       ColourPallete() = default;
 
-      ColourPallete(std::vector<Bin>& bins, std::vector<std::size_t>& valid_indicies) noexcept;
+      ColourPallete(std::vector<Bin>& bins) noexcept;
 
       std::vector<RGBPixel> data;
 

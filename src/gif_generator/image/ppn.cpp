@@ -1,6 +1,7 @@
 #include "ppn.h"
 
 #include <algorithm>
+#include <functional>
 #include <limits>
 
 namespace gif {
@@ -48,13 +49,14 @@ namespace gif {
         });
       }
 
-      // Remove bins where pixel count is zero
-      inline void remove_empty_bins(std::vector<Bin>& bins) noexcept {
+      // Remove bins where bin matches the condition specified by the function `is_valid_bin`
+      inline void remove_bins(std::vector<Bin>& bins,
+                              const std::function<bool(const Bin&)>& is_valid_bin) noexcept {
         // Move all empty bins to the end of the vector and remove
         std::size_t max_bins = 0;
         for (std::size_t idx = 0; idx < bins.size(); ++idx) {
           const auto bin = bins[idx];
-          if (bin.pixel_count != 0) {
+          if (is_valid_bin(bin)) {
             bins[max_bins++] = bin;
           }
         }
@@ -72,7 +74,8 @@ namespace gif {
       bin_average(bins);
 
       // Remove empty bins
-      remove_empty_bins(bins);
+      const auto is_not_empty = [](const Bin& bin) { return bin.pixel_count != 0; };
+      remove_bins(bins, is_not_empty);
 
       // Connect next and previous indicies and set MSE. Size should be always greater than 0.
       for (std::size_t idx = 0; idx < bins.size() - 1; idx++) {
@@ -82,7 +85,7 @@ namespace gif {
         bins[idx].distance_to_next = MSE_increase(bins[idx], bins[idx + 1]);
       }
       // Give last index its appropriate index
-      bins[bins.size()-1].idx = bins.size()-1;
+      bins[bins.size() - 1].idx = bins.size() - 1;
 
       bin_heap = std::vector<std::size_t>(bins.size());
       for (std::size_t idx = 0; idx < bins.size(); idx++) {
@@ -98,11 +101,15 @@ namespace gif {
         merge();
       }
 
-      return ColourPallete(bins, bin_heap);
+      // Remove all merged bins
+      const auto is_not_merged = [](const Bin& bin) { return bin.heap_idx != -1; };
+      remove_bins(bins, is_not_merged);
+
+      return ColourPallete(bins);
     }
 
     void PPNThreshold::merge() noexcept {
-      const auto& least_bin = bins[bin_heap[0]];
+      auto& least_bin = bins[bin_heap[0]];
       // Next_idx should never be -1. Always 0 or greater, hence safe indexing.
       auto& merge_bin = bins[static_cast<std::size_t>(least_bin.next_idx)];
 
@@ -134,6 +141,7 @@ namespace gif {
       // Remove least bin. heap_idx should never be -1. Should always be 0 or greater
       swap_elem(static_cast<std::size_t>(least_bin.heap_idx), bin_heap.size() - 1);
       bin_heap.pop_back();
+      least_bin.heap_idx = -1;
       heapify_down(0);
     }
 
@@ -167,19 +175,6 @@ namespace gif {
       }
     }
 
-    void PPNThreshold::heapify_up(std::size_t idx) noexcept {
-      if (idx == 0) {
-        return;
-      }
-      const auto parent_idx = parent(idx);
-      const auto& parent_bin = bins[bin_heap[parent_idx]];
-      const auto& curr_bin = bins[bin_heap[idx]];
-      if (curr_bin < parent_bin) {
-        swap_elem(parent_idx, idx);
-        heapify_up(parent_idx);
-      }
-    }
-
     bool PPNThreshold::has_child(std::size_t idx) const noexcept {
       const auto left = left_child(idx);
       const auto right = right_child(idx);
@@ -203,7 +198,5 @@ namespace gif {
     std::size_t PPNThreshold::left_child(std::size_t idx) const noexcept { return 2 * idx + 1; }
 
     std::size_t PPNThreshold::right_child(std::size_t idx) const noexcept { return 2 * (idx + 1); }
-
-    std::size_t PPNThreshold::parent(std::size_t idx) const noexcept { return (idx - 1) / 2; }
   }  // namespace image
 }  // namespace gif
