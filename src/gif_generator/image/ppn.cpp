@@ -82,7 +82,7 @@ namespace gif {
         bins[idx].distance_to_next = MSE_increase(bins[idx], bins[idx + 1]);
       }
       // Give last index its appropriate index
-      bins[bins.size()-1].idx = bins.size()-1;
+      bins[bins.size() - 1].idx = bins.size() - 1;
 
       bin_heap = std::vector<std::size_t>(bins.size());
       for (std::size_t idx = 0; idx < bins.size(); idx++) {
@@ -93,12 +93,20 @@ namespace gif {
       build_heap();
     }
 
-    ColourPallete PPNThreshold::merge_to_size(std::size_t size) noexcept {
+    std::vector<RGBPixel> PPNThreshold::merge_to_size(std::size_t size) noexcept {
       while (bin_heap.size() > size) {
         merge();
       }
 
-      return ColourPallete(bins, bin_heap);
+      std::vector<RGBPixel> reduced_pixels;
+      reduced_pixels.reserve(bin_heap.size());
+      for (const auto& bin_idx : bin_heap) {
+        reduced_pixels.emplace_back(static_cast<unsigned char>(bins[bin_idx].red_channel_avg),
+                                    static_cast<unsigned char>(bins[bin_idx].green_channel_avg),
+                                    static_cast<unsigned char>(bins[bin_idx].blue_channel_avg));
+      }
+
+      return reduced_pixels;
     }
 
     void PPNThreshold::merge() noexcept {
