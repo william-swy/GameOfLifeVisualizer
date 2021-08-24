@@ -3,9 +3,9 @@
 #include <cstddef>
 #include <vector>
 
+#include "RGB_pixel.h"
 #include "colour_pallete.h"
 #include "image_frame.h"
-#include "RGB_pixel.h"
 #include "ppn_bin.h"
 
 namespace gif {
@@ -21,8 +21,6 @@ namespace gif {
       std::vector<RGBPixel> merge_to_size(std::size_t size) noexcept;
 
     private:
-      bool has_alpha;
-
       std::vector<Bin> bins;
 
       std::vector<std::size_t> bin_heap;  // Each entry represents an index in bins
