@@ -2,8 +2,6 @@
 
 add_library(
   gif_generator
-  
-  
   "gif.h"
   "gif_generator.cpp"
   "gif_generator.h"

@@ -17,7 +17,7 @@ namespace gif {
       PPNThreshold(const ImageFrame& img, TargetFormat target_format) noexcept;
 
       // Size must be greater than zero
-      std::vector<RGBPixel> merge_to_size(std::size_t size) noexcept;
+      [[nodiscard]] std::vector<RGBPixel> merge_to_size(std::size_t size) noexcept;
 
     private:
       std::vector<Bin> bins;

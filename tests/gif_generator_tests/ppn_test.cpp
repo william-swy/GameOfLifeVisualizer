@@ -12,7 +12,6 @@ TEST_CASE("No merging needed", "[part=ppn]") {
                                         gif::image::TargetFormat::RGB12);
 
     const auto reduced_pixels = ppn.merge_to_size(1);
-    ppn.merge_to_size(1);
 
     REQUIRE(reduced_pixels.size() == 1);
     REQUIRE(reduced_pixels[0].red == 0x0F);
@@ -29,6 +28,7 @@ TEST_CASE("No merging needed", "[part=ppn]") {
                                         gif::image::TargetFormat::RGB12);
 
     const auto reduced_pixels = ppn.merge_to_size(1);
+
     REQUIRE(reduced_pixels.size() == 1);
     REQUIRE(reduced_pixels[0].red == 0x0F);
     REQUIRE(reduced_pixels[0].green == 0x04);
@@ -52,11 +52,13 @@ TEST_CASE("No merging needed", "[part=ppn]") {
     REQUIRE(reduced_pixels.size() == 5);
 
     // Should be ordered via a zero based min heap using MSE_increase
-    std::array<gif::image::RGBPixel, 5> expected{{{0x00, 0x03, 0x0A},
+    std::array<gif::image::RGBPixel, 5> expected{{{0x0F, 0x04, 0x05},
                                                   {0x0A, 0x04, 0x05},
                                                   {0x0E, 0x03, 0x05},
-                                                  {0x0F, 0x04, 0x05},
-                                                  {0x0F, 0x05, 0x05}}};
+                                                  {0x00, 0x03, 0x0A},
+                                                  {0x0F, 0x05, 0x05}
+
+    }};
 
     for (std::size_t idx = 0; idx < expected.size(); idx++) {
       REQUIRE(reduced_pixels[idx].red == expected[idx].red);
@@ -112,7 +114,7 @@ TEST_CASE("Merging needed", "[part=ppn]") {
     REQUIRE(reduced_pixels.size() == 3);
 
     std::array<gif::image::RGBPixel, 3> expected{
-        {{0x0, 0x2, 0x8}, {0x6, 0xA, 0x3}, {0xE, 0x3, 0x5}}};
+        {{0x6, 0xA, 0x3}, {0x0, 0x2, 0x8}, {0xE, 0x3, 0x5}}};
 
     for (std::size_t idx = 0; idx < expected.size(); idx++) {
       REQUIRE(reduced_pixels[idx].red == expected[idx].red);
@@ -137,7 +139,7 @@ TEST_CASE("Merging needed", "[part=ppn]") {
     REQUIRE(reduced_pixels.size() == 3);
 
     std::array<gif::image::RGBPixel, 3> expected{
-        {{0x1, 0x1, 0x2}, {0x8, 0x2, 0x1}, {0x9, 0x8, 0x1}}};
+        {{0x8, 0x2, 0x1}, {0x1, 0x1, 0x2}, {0x9, 0x8, 0x1}}};
 
     for (std::size_t idx = 0; idx < expected.size(); idx++) {
       REQUIRE(reduced_pixels[idx].red == expected[idx].red);
@@ -162,13 +164,7 @@ TEST_CASE("Merging needed", "[part=ppn]") {
     REQUIRE(reduced_pixels.size() == 3);
 
     std::array<gif::image::RGBPixel, 3> expected{
-        {{0x0, 0x2, 0x8}, {0x9, 0x8, 0x4}, {0xF, 0x9, 0x2}}};
-
-    for (std::size_t idx = 0; idx < expected.size(); idx++) {
-      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
-      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
-      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
-    }
+        {{0x9, 0x8, 0x4}, {0x0, 0x2, 0x8}, {0xF, 0xA, 0x2}}};
   }
 
   SECTION("merge once, assorted pixel count per bin", "[weight=1]") {
@@ -222,7 +218,7 @@ TEST_CASE("Merging needed", "[part=ppn]") {
     REQUIRE(reduced_pixels.size() == target_size);
 
     std::array<gif::image::RGBPixel, target_size> expected{
-        {{0x0, 0xF, 0x8}, {0x2, 0x1, 0x1}, {0x5, 0x3, 0x2}, {0xE, 0xD, 0xA}}};
+        {{0x2, 0x1, 0x1}, {0x0, 0xF, 0x8}, {0xE, 0xD, 0xA}, {0x5, 0x3, 0x2}}};
 
     for (std::size_t idx = 0; idx < expected.size(); idx++) {
       REQUIRE(reduced_pixels[idx].red == expected[idx].red);
