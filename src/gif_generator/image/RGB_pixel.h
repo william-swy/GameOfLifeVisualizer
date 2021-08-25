@@ -1,6 +1,7 @@
 #pragma once
 
 #pragma warning(push, 0)  // System header should have warnings
+#include <cstddef>
 #include <tuple>
 #pragma warning(pop)
 
@@ -41,6 +42,25 @@ namespace gif {
       // unsigned int is the shifted OR of each channel and is interpreted as
       // 0b0000000000000000RRRRRGGGGGGBBBBB
       std::tuple<unsigned int, RGBPixel> RGB16() const noexcept;
+
+      bool operator<(const RGBPixel& other) const noexcept;
     };
+
+    // Checks if the first pixel is smaller than the second pixel. Uses the dimension to compare the
+    // pixels. A dimension value of 0 corresponds to the red channel, a dimension of 1 corresponds
+    // to the green channel and a dimension of 2 corresponds to the blue channel. The precondition
+    // is that dimension must be between 0 and 2 inclusive. If the channel of the specified
+    // dimension is equal, operator< is used to resolve the tie.
+    bool RGB_smaller_by_dim(const RGBPixel& first, const RGBPixel& second,
+                            std::size_t dimension) noexcept;
+
+    // Computes the square of the euclidian distance between the two pixels. The two pixels are
+    // treated as two vectors in R^3.
+    std::size_t RGB_euclidian_squared(const RGBPixel& first, const RGBPixel& second) noexcept;
+
+    // Computes the square of the distance between the specified dimension of the two pixels.
+    // Precondition is that dimension should be between 0 and 2 inclusive.
+    std::size_t RGB_dim_distance_squared(const RGBPixel& first, const RGBPixel& second,
+                                         std::size_t dimension) noexcept;
   }  // namespace image
 }  // namespace gif

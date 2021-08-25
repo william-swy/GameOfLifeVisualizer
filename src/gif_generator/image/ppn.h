@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "RGB_pixel.h"
-#include "colour_pallete.h"
 #include "image_frame.h"
 #include "ppn_bin.h"
 
