@@ -111,7 +111,7 @@ jobs:
           Get-PsDrive
           cmake --version
           ninja --version
-          cmake -S ${{ env.srcDir }} -B ${{ env.buildDir }} -GNinja -DCMAKE_BUILD_TYPE=Release
+          cmake -S ${{ env.srcDir }} -B ${{ env.buildDir }} -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ env.srcDir }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
           cmake --build ${{ env.buildDir }} --target all --parallel $(nproc)
           Get-PsDrive
       - name: If the job has failed
@@ -130,3 +130,27 @@ jobs:
         with:
           timeZone: 8
           format: "YYYY-MM-DD-HH-mm-ss"
+
+      - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - uploading artifact (whole zip)
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-package
+          path: |
+            ${{ env.buildDir }}
+            !${{ env.buildDir }}/.cmake
+            !${{ env.buildDir }}/CMakeFiles
+            !${{ env.buildDir }}/cmake_install.cmake
+            !${{ env.buildDir }}/CMakeCache.txt
+            !${{ env.buildDir }}/.ninja_deps
+            !${{ env.buildDir }}/.ninja_log
+            !${{ env.buildDir }}/build.ninja
+            !${{ env.buildDir }}/**/*autogen*
+            !${{ env.buildDir }}/vcpkg_installed
+            !${{ env.buildDir }}/**/*.log
+            !${{ env.buildDir }}/*.manifest
+            !${{ env.buildDir }}/compile_commands.json
+      - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - uploading artifact (only the exe)
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-exe
+          path: ${{ env.buildDir }}/${{ env.name }}.exe
