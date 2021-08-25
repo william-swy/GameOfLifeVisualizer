@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <vector>
 
-#include "colour_pallete.h"
+#include "RGB_pixel.h"
 #include "image_frame.h"
 #include "ppn_bin.h"
 
@@ -17,8 +17,9 @@ namespace gif {
       PPNThreshold(const ImageFrame& img, TargetFormat target_format) noexcept;
 
       // Size must be greater than zero
-      ColourPallete merge_to_size(std::size_t size) noexcept;
+      std::vector<RGBPixel> merge_to_size(std::size_t size) noexcept;
 
+    private:
       std::vector<Bin> bins;
 
     private:

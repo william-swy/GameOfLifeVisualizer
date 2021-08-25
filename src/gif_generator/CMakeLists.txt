@@ -2,8 +2,8 @@
 
 add_library(
   gif_generator
-  "colour_kd_tree.cpp"
-  "colour_kd_tree.h"
+  
+  
   "gif.h"
   "gif_generator.cpp"
   "gif_generator.h"

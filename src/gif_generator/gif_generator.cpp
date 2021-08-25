@@ -7,7 +7,6 @@
 #include <iterator>
 #include <tuple>
 
-#include "colour_kd_tree.h"
 #include "gif.h"
 
 namespace gif {

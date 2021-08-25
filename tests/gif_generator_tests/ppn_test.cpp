@@ -3,8 +3,6 @@
 #include <array>
 #include <catch2/catch.hpp>
 
-// For all test cases, we are only concerned about the casted red, green and blue channels of each
-// bin. All the other fields do not matter.
 TEST_CASE("No merging needed", "[part=ppn]") {
   SECTION("one bin one pixel", "[weight=1]") {
     // One pixel one bin, no merging needed
@@ -13,12 +11,13 @@ TEST_CASE("No merging needed", "[part=ppn]") {
     auto ppn = gif::image::PPNThreshold(gif::image::ImageFrame(data.data(), size, 1, 1),
                                         gif::image::TargetFormat::RGB12);
 
+    const auto reduced_pixels = ppn.merge_to_size(1);
     ppn.merge_to_size(1);
 
-    REQUIRE(ppn.bins.size() == 1);
-    REQUIRE(static_cast<unsigned char>(ppn.bins[0].red_channel_avg) == 0x0F);
-    REQUIRE(static_cast<unsigned char>(ppn.bins[0].green_channel_avg) == 0x04);
-    REQUIRE(static_cast<unsigned char>(ppn.bins[0].blue_channel_avg) == 0x05);
+    REQUIRE(reduced_pixels.size() == 1);
+    REQUIRE(reduced_pixels[0].red == 0x0F);
+    REQUIRE(reduced_pixels[0].green == 0x04);
+    REQUIRE(reduced_pixels[0].blue == 0x05);
   }
 
   SECTION("one bin multiple pixels", "[weight=1]") {
@@ -29,12 +28,11 @@ TEST_CASE("No merging needed", "[part=ppn]") {
     auto ppn = gif::image::PPNThreshold(gif::image::ImageFrame(data.data(), size, 3, 1),
                                         gif::image::TargetFormat::RGB12);
 
-    ppn.merge_to_size(1);
-
-    REQUIRE(ppn.bins.size() == 1);
-    REQUIRE(static_cast<unsigned char>(ppn.bins[0].red_channel_avg) == 0x0F);
-    REQUIRE(static_cast<unsigned char>(ppn.bins[0].green_channel_avg) == 0x04);
-    REQUIRE(static_cast<unsigned char>(ppn.bins[0].blue_channel_avg) == 0x05);
+    const auto reduced_pixels = ppn.merge_to_size(1);
+    REQUIRE(reduced_pixels.size() == 1);
+    REQUIRE(reduced_pixels[0].red == 0x0F);
+    REQUIRE(reduced_pixels[0].green == 0x04);
+    REQUIRE(reduced_pixels[0].blue == 0x05);
   }
 
   SECTION("multiple bin one pixel each", "[weight=1]") {
@@ -50,8 +48,8 @@ TEST_CASE("No merging needed", "[part=ppn]") {
     auto ppn = gif::image::PPNThreshold(gif::image::ImageFrame(data.data(), size, 5, 1),
                                         gif::image::TargetFormat::RGB12);
 
-    ppn.merge_to_size(5);
-    REQUIRE(ppn.bins.size() == 5);
+    const auto reduced_pixels = ppn.merge_to_size(5);
+    REQUIRE(reduced_pixels.size() == 5);
 
     // Should be ordered via a zero based min heap using MSE_increase
     std::array<gif::image::RGBPixel, 5> expected{{{0x00, 0x03, 0x0A},
@@ -60,10 +58,10 @@ TEST_CASE("No merging needed", "[part=ppn]") {
                                                   {0x0F, 0x04, 0x05},
                                                   {0x0F, 0x05, 0x05}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 
@@ -83,16 +81,16 @@ TEST_CASE("No merging needed", "[part=ppn]") {
     auto ppn = gif::image::PPNThreshold(gif::image::ImageFrame(data.data(), size, 2, 4),
                                         gif::image::TargetFormat::RGB12);
 
-    const auto pallete = ppn.merge_to_size(3);
-    REQUIRE(pallete.data.size() == 3);
+    const auto reduced_pixels = ppn.merge_to_size(3);
+    REQUIRE(reduced_pixels.size() == 3);
 
     std::array<gif::image::RGBPixel, 3> expected{
         {{0x01, 0x04, 0x09}, {0x06, 0x09, 0x2}, {0x0D, 0x02, 0x0}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 }
@@ -110,16 +108,16 @@ TEST_CASE("Merging needed", "[part=ppn]") {
     auto ppn = gif::image::PPNThreshold(gif::image::ImageFrame(data.data(), size, 2, 2),
                                         gif::image::TargetFormat::RGB12);
 
-    const auto pallete = ppn.merge_to_size(3);
-    REQUIRE(pallete.data.size() == 3);
+    const auto reduced_pixels = ppn.merge_to_size(3);
+    REQUIRE(reduced_pixels.size() == 3);
 
     std::array<gif::image::RGBPixel, 3> expected{
         {{0x0, 0x2, 0x8}, {0x6, 0xA, 0x3}, {0xE, 0x3, 0x5}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 
@@ -135,16 +133,16 @@ TEST_CASE("Merging needed", "[part=ppn]") {
     auto ppn = gif::image::PPNThreshold(gif::image::ImageFrame(data.data(), size, 2, 2),
                                         gif::image::TargetFormat::RGB12);
 
-    const auto pallete = ppn.merge_to_size(3);
-    REQUIRE(pallete.data.size() == 3);
+    const auto reduced_pixels = ppn.merge_to_size(3);
+    REQUIRE(reduced_pixels.size() == 3);
 
     std::array<gif::image::RGBPixel, 3> expected{
         {{0x1, 0x1, 0x2}, {0x8, 0x2, 0x1}, {0x9, 0x8, 0x1}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 
@@ -160,16 +158,16 @@ TEST_CASE("Merging needed", "[part=ppn]") {
     auto ppn = gif::image::PPNThreshold(gif::image::ImageFrame(data.data(), size, 2, 2),
                                         gif::image::TargetFormat::RGB12);
 
-    const auto pallete = ppn.merge_to_size(3);
-    REQUIRE(pallete.data.size() == 3);
+    const auto reduced_pixels = ppn.merge_to_size(3);
+    REQUIRE(reduced_pixels.size() == 3);
 
     std::array<gif::image::RGBPixel, 3> expected{
         {{0x0, 0x2, 0x8}, {0x9, 0x8, 0x4}, {0xF, 0x9, 0x2}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 
@@ -191,16 +189,16 @@ TEST_CASE("Merging needed", "[part=ppn]") {
                                         gif::image::TargetFormat::RGB12);
 
     constexpr std::size_t target_size = 4;
-    const auto pallete = ppn.merge_to_size(target_size);
-    REQUIRE(pallete.data.size() == target_size);
+    const auto reduced_pixels = ppn.merge_to_size(target_size);
+    REQUIRE(reduced_pixels.size() == target_size);
 
     std::array<gif::image::RGBPixel, target_size> expected{
         {{0x0, 0x2, 0x8}, {0x4, 0x2, 0xE}, {0x9, 0x8, 0x4}, {0xF, 0x9, 0x2}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 
@@ -220,16 +218,16 @@ TEST_CASE("Merging needed", "[part=ppn]") {
                                         gif::image::TargetFormat::RGB12);
 
     constexpr std::size_t target_size = 4;
-    const auto pallete = ppn.merge_to_size(target_size);
-    REQUIRE(pallete.data.size() == target_size);
+    const auto reduced_pixels = ppn.merge_to_size(target_size);
+    REQUIRE(reduced_pixels.size() == target_size);
 
     std::array<gif::image::RGBPixel, target_size> expected{
         {{0x0, 0xF, 0x8}, {0x2, 0x1, 0x1}, {0x5, 0x3, 0x2}, {0xE, 0xD, 0xA}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 
@@ -254,16 +252,16 @@ TEST_CASE("Merging needed", "[part=ppn]") {
                                         gif::image::TargetFormat::RGB12);
 
     constexpr std::size_t target_size = 5;
-    const auto pallete = ppn.merge_to_size(target_size);
-    REQUIRE(pallete.data.size() == target_size);
+    const auto reduced_pixels = ppn.merge_to_size(target_size);
+    REQUIRE(reduced_pixels.size() == target_size);
 
     std::array<gif::image::RGBPixel, target_size> expected{
         {{0x0, 0xF, 0x8}, {0x1, 0xD, 0x2}, {0x3, 0x2, 0x1}, {0x4, 0x5, 0x6}, {0xD, 0xC, 0xA}}};
 
-    for (std::size_t idx = 0; idx < ppn.bins.size(); idx++) {
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].red_channel_avg) == expected[idx].red);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].green_channel_avg) == expected[idx].green);
-      REQUIRE(static_cast<unsigned char>(ppn.bins[idx].blue_channel_avg) == expected[idx].blue);
+    for (std::size_t idx = 0; idx < expected.size(); idx++) {
+      REQUIRE(reduced_pixels[idx].red == expected[idx].red);
+      REQUIRE(reduced_pixels[idx].green == expected[idx].green);
+      REQUIRE(reduced_pixels[idx].blue == expected[idx].blue);
     }
   }
 }
