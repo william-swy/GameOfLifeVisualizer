@@ -1,5 +1,6 @@
 #include "colour_pallete.h"
 
+#include <cmath>
 #include <cstddef>
 #include <tuple>
 #include <utility>
@@ -20,6 +21,12 @@ namespace gif {
           = nearest_neighbour(query, 0, static_cast<long long>(kd_tree.size() - 1), 0);
 
       return NN_pix;
+    }
+
+    std::size_t ColourPallete::size() const noexcept {
+      // Will never take log of 0 as the size always has at least one element.
+      const auto val = std::log2(static_cast<double>(kd_tree.size()));
+      return static_cast<std::size_t>(std::ceil(val));
     }
 
     // low and high are long long instead of std::size_t as middle -1 is called during the recursion

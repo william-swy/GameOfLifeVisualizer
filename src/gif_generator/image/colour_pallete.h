@@ -13,11 +13,15 @@ namespace gif {
       ColourPallete() = default;
 
       // Will take ownership of the vector of pixels. The vector of pixels should be the reduced
-      // amount of pixels. Precondition is that the bins have a size of at least 1.
+      // amount of pixels. Precondition is that the bins have a size of at least 1. Base on use
+      // case, the maximum size of bins should be 255.
       ColourPallete(std::vector<RGBPixel>&& bins) noexcept;
 
       // Precondition is that the tree has at least one element.
       RGBPixel find_nearest_neighbour(const RGBPixel& query) const noexcept;
+
+      // Computes the size of the pallete after taking the ceiling of log_2
+      std::size_t size() const noexcept;
 
     private:
       std::vector<RGBPixel> kd_tree;
