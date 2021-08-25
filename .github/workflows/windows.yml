@@ -7,11 +7,11 @@ on:
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
   user: Pectacius
-  name: game-of-life-visualizer
-  GITHUB_WORKSPACE: C:/game-of-life-visualizer
-  BUILD_SOURCESDIRECTORY: C:/game-of-life-visualizer
-  srcDir: C:/game-of-life-visualizer
-  buildDir: C:/game-of-life-visualizer/build
+  name: GameOfLifeVisualizer
+  GITHUB_WORKSPACE: C:/GameOfLifeVisualizer
+  BUILD_SOURCESDIRECTORY: C:/GameOfLifeVisualizer
+  srcDir: C:/GameOfLifeVisualizer
+  buildDir: C:/GameOfLifeVisualizer/build
 
 jobs:
   build:
