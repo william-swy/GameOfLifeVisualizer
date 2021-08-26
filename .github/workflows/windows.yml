@@ -14,9 +14,7 @@ jobs:
       matrix:
         qt_version: [5.15.0]
         platform: [windows-latest]
-        arch: [
-            x64,
-          ]
+        arch: [x64]
         include:
           # x86 is get error (qt cannot be installed)
           # - platform: windows-latest
@@ -80,7 +78,6 @@ jobs:
         if: matrix.platform == 'windows-latest'
         uses: ashutoshvarma/setup-ninja@master
         with:
-          # ninja version to download. Default: 1.10.0
           version: 1.10.0
       # ========================================================================================================= Generate MakeFile and Build
       - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - Generate Dependencies and Build
@@ -88,23 +85,17 @@ jobs:
         env:
           CC: cl.exe
           CXX: cl.exe
-        # https://stackoverflow.com/questions/31262342/cmake-g-ninja-on-windows-specify-x64?rq=1
         run: |
           Get-PsDrive
           cmake --version
           ninja --version
           cmake -B ${{ env.BUILD_DIR }} -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
           cmake --build ${{ env.BUILD_DIR }} --target all --parallel $(nproc)
-          ctest --test-dir ${{ env.BUILD_DIR }}
           Get-PsDrive
       - name: If the job has failed
         if: ${{ failure() }}
         run: |
-          ls ${{ env.BUILD_DIR }}/build/
-          cat ${{ env.BUILD_DIR }}/build/vcpkg-manifest-install.log
-      - name: Get Time
-        id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          timeZone: 8
-          format: "YYYY-MM-DD-HH-mm-ss"
+          ls ${{ env.BUILD_DIR }}
+          cat ${{ env.BUILD_DIR }}/vcpkg-manifest-install.log
+      - name: Run Tests
+        run : ctest --test-dir ${{ env.BUILD_DIR }}
