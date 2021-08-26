@@ -108,22 +108,3 @@ jobs:
         with:
           timeZone: 8
           format: "YYYY-MM-DD-HH-mm-ss"
-
-      - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - uploading artifact (whole zip)
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-package
-          path: |
-            ${{ env.BUILD_DIR }}
-            !${{ env.buildDir }}/.cmake
-            !${{ env.buildDir }}/CMakeFiles
-            !${{ env.buildDir }}/cmake_install.cmake
-            !${{ env.buildDir }}/CMakeCache.txt
-            !${{ env.buildDir }}/.ninja_deps
-            !${{ env.buildDir }}/.ninja_log
-            !${{ env.buildDir }}/build.ninja
-            !${{ env.buildDir }}/**/*autogen*
-            !${{ env.buildDir }}/vcpkg_installed
-            !${{ env.buildDir }}/**/*.log
-            !${{ env.buildDir }}/*.manifest
-            !${{ env.buildDir }}/compile_commands.json
