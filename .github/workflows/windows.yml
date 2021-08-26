@@ -5,11 +5,8 @@ on:
   pull_request:
   
 env:
-  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-  GITHUB_WORKSPACE: C:/GameOfLifeVisualizer
-  BUILD_SOURCESDIRECTORY: C:/GameOfLifeVisualizer
-  srcDir: C:/GameOfLifeVisualizer
-  buildDir: C:/GameOfLifeVisualizer/build
+  name: GameOfLifeVisualizer
+  BUILD_DIR: '${{ github.workspace }}/build'
 
 jobs:
   build:
@@ -37,13 +34,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Copy sources
-        shell: bash
-        run: |
-          cp -r $GITHUB_WORKSPACE/. ${{ env.srcDir }}
-          ls ${{ env.srcDir }}/
-          ls ${{ env.srcDir }}/.git
-          ls ${{ env.srcDir }}/vcpkg
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v1.9
         with:
@@ -65,13 +55,13 @@ jobs:
           # Just install vcpkg for now, do not install any ports in this step yet.
           setupOnly: true
           # Location of the vcpkg submodule in the Git repository.
-          vcpkgDirectory: "${{ env.srcDir }}/vcpkg"
+          vcpkgDirectory: "${{ github.workspace }}/vcpkg"
           # Since the cache must be invalidated when content of the vcpkg.json file changes, let's
           # compute its hash and append this to the computed cache's key.
           appendedCacheKey: ${{ hashFiles( '**/vcpkg_manifest/vcpkg.json' ) }}
           vcpkgTriplet: ${{ matrix.arch }}-windows
           # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
-          additionalCachedPaths: ${{ env.buildDir }}/vcpkg_installed
+          additionalCachedPaths: ${{ env.BUILD_DIR }}/vcpkg_installed
 
       - name: Cache Qt
         id: cache-qt
@@ -103,20 +93,15 @@ jobs:
           Get-PsDrive
           cmake --version
           ninja --version
-          cmake -S ${{ env.srcDir }} -B ${{ env.buildDir }} -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ env.srcDir }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-          cmake --build ${{ env.buildDir }} --target all --parallel $(nproc)
-          ctest --test-dir ${{ env.buildDir }}
+          cmake -B ${{ env.BUILD_DIR }} -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          cmake --build ${{ env.BUILD_DIR }} --target all --parallel $(nproc)
+          ctest --test-dir ${{ env.BUILD_DIR }}
           Get-PsDrive
       - name: If the job has failed
         if: ${{ failure() }}
         run: |
-          ls ${{ env.srcDir }}/build/
-          cat ${{ env.srcDir }}/build/vcpkg-manifest-install.log
-      - name: Set outputs
-        id: vars
-        run: |
-          cd ${{ env.srcDir }}
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          ls ${{ env.BUILD_DIR }}/build/
+          cat ${{ env.BUILD_DIR }}/build/vcpkg-manifest-install.log
       - name: Get Time
         id: time
         uses: nanzm/get-time-action@v1.1
@@ -129,7 +114,7 @@ jobs:
         with:
           name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-package
           path: |
-            ${{ env.buildDir }}
+            ${{ env.BUILD_DIR }}
             !${{ env.buildDir }}/.cmake
             !${{ env.buildDir }}/CMakeFiles
             !${{ env.buildDir }}/cmake_install.cmake
