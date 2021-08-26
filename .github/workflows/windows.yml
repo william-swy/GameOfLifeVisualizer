@@ -6,8 +6,6 @@ on:
   
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-  user: Pectacius
-  name: GameOfLifeVisualizer
   GITHUB_WORKSPACE: C:/GameOfLifeVisualizer
   BUILD_SOURCESDIRECTORY: C:/GameOfLifeVisualizer
   srcDir: C:/GameOfLifeVisualizer
@@ -35,14 +33,8 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Get the version
-        id: get_version
-        shell: bash
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-
       - uses: actions/checkout@v2
         with:
-          repository: ${{ env.user }}/${{ env.name }}
           submodules: recursive
 
       - name: Copy sources
@@ -55,7 +47,7 @@ jobs:
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v1.9
         with:
-          cmake-version: "3.21"
+          cmake-version: "3.18"
 
       # =========================================================================================================
       - name: Install MSVC compiler
@@ -150,8 +142,3 @@ jobs:
             !${{ env.buildDir }}/**/*.log
             !${{ env.buildDir }}/*.manifest
             !${{ env.buildDir }}/compile_commands.json
-      - name: Win-${{ matrix.arch }} - ${{ matrix.qt_version }} - uploading artifact (only the exe)
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ env.name }}-${{ steps.time.outputs.time }}-${{ steps.vars.outputs.sha_short }}-windows-${{ matrix.arch }}-exe
-          path: ${{ env.buildDir }}/${{ env.name }}.exe
