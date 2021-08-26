@@ -115,23 +115,24 @@ void RecordingViewer::save_images_to_gif() {
   const auto save_file
       = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("Images (*.gif)"));
   if (!save_file.isEmpty()) {
-    std::vector<gif::ImageFrame> converted_imgs;
+    std::vector<gif::image::ImageFrame> converted_imgs;
     converted_imgs.resize(images.size());  // Allocate space to place elements
     std::transform(images.begin(), images.end(), converted_imgs.begin(), [](const QImage& img) {
       // Convert to 8 bit representation of RGB with no alpha
       const auto transformed_img = img.convertToFormat(QImage::Format_RGB888);
-      //std::cout << transformed_img.depth() << std::endl;
-      //std::cout << transformed_img.hasAlphaChannel() << std::endl;
-      //std::cout << transformed_img.format() << std::endl;
-      //std::cout << transformed_img.width() << std::endl;
-      //std::cout << transformed_img.height() << std::endl;
-      //std::cout << transformed_img.sizeInBytes() << std::endl;
+      // std::cout << transformed_img.depth() << std::endl;
+      // std::cout << transformed_img.hasAlphaChannel() << std::endl;
+      // std::cout << transformed_img.format() << std::endl;
+      // std::cout << transformed_img.width() << std::endl;
+      // std::cout << transformed_img.height() << std::endl;
+      // std::cout << transformed_img.sizeInBytes() << std::endl;
       std::cout << std::hex << transformed_img.constBits()[0] << std::endl;
-      return gif::ImageFrame{transformed_img.constBits(),
-                             static_cast<std::size_t>(transformed_img.sizeInBytes()),
-                             static_cast<unsigned short>(transformed_img.width()),
-                             static_cast<unsigned short>(transformed_img.height()),
-                             gif::ImageFormat::RGB24};
+      return gif::image::ImageFrame{
+          transformed_img.constBits(),
+          static_cast<std::size_t>(transformed_img.sizeInBytes()),
+          static_cast<unsigned short>(transformed_img.width()),
+          static_cast<unsigned short>(transformed_img.height()),
+      };
     });
 
     // gif::write_to_gif(converted_imgs, save_file.toStdString());
