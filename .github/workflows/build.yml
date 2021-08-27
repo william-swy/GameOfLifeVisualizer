@@ -71,6 +71,23 @@ jobs:
             cmake -B ${{ env.build_dir }} -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
             cmake --build ${{ env.build_dir }} --target all
 
+        - name: Install Linux System Dependencies
+          if: ${{ matrix.os == 'ubuntu-latest' }}
+          shell: bash
+          env:
+            APT_PACKAGES:
+              build-essential libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev autoconf dh-autoreconf autoconf-archive libgles2-mesa-dev
+
+            # Additionally required by qt5-base
+            QT_APT_PACKAGES:
+              libxext-dev libxfixes-dev libxrender-dev \
+              libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev"
+          run: |
+            sudo apt -y update
+            sudo apt -y dist-upgrade
+            sudo apt -y install ${{ env.APT_PACKAGES }}
+            sudo apt -y install ${{ env.QT_APT_PACKAGES }}
+
         - name: Ubuntu-${{ matrix.arch }} - Generate Dependencies and Build
           if: ${{ matrix.os == 'ubuntu-latest' }}
           shell: bash
