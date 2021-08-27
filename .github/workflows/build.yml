@@ -76,7 +76,7 @@ jobs:
           shell: bash
           env:
             APT_PACKAGES:
-              build-essential clang++ gperf libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev autoconf dh-autoreconf autoconf-archive libgles2-mesa-dev libxi-dev
+              build-essential g++ gperf libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev autoconf dh-autoreconf autoconf-archive libgles2-mesa-dev libxi-dev
 
             # Additionally required by qt5-base
             QT_APT_PACKAGES:
@@ -90,6 +90,9 @@ jobs:
         - name: Ubuntu-${{ matrix.arch }} - Generate Dependencies and Build
           if: ${{ matrix.os == 'ubuntu-latest' }}
           shell: bash
+          env:
+            CC: gcc
+            CXX: g++
           run: |
             cmake --version
             ninja --version
