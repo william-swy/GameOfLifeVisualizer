@@ -55,7 +55,6 @@ jobs:
             additionalCachedPaths: ${{ env.build_dir }}/vcpkg_installed
 
         - name: Setup Ninja Windows
-          if: ${{ matrix.os == 'windows-latest' }}
           uses: ashutoshvarma/setup-ninja@master
           with:
             version: 1.10.0
@@ -77,7 +76,7 @@ jobs:
           shell: bash
           env:
             APT_PACKAGES:
-              build-essential gperf libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev autoconf dh-autoreconf autoconf-archive libgles2-mesa-dev libxi-dev
+              build-essential clang++ gperf libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev autoconf dh-autoreconf autoconf-archive libgles2-mesa-dev libxi-dev
 
             # Additionally required by qt5-base
             QT_APT_PACKAGES:
@@ -92,5 +91,7 @@ jobs:
           if: ${{ matrix.os == 'ubuntu-latest' }}
           shell: bash
           run: |
-            cmake -B ${{ env.build_dir }} -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+            cmake --version
+            ninja --version
+            cmake -B ${{ env.build_dir }} -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
             cmake --build ${{ env.build_dir }} --target all
