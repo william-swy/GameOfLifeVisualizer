@@ -54,7 +54,8 @@ jobs:
             # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
             additionalCachedPaths: ${{ env.build_dir }}/vcpkg_installed
 
-        - name: Setup Ninja
+        - name: Setup Ninja Windows
+          if: ${{ matrix.os == 'windows-latest' }}
           uses: ashutoshvarma/setup-ninja@master
           with:
             version: 1.10.0
@@ -76,7 +77,7 @@ jobs:
           shell: bash
           env:
             APT_PACKAGES:
-              build-essential gperf libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev autoconf dh-autoreconf autoconf-archive libgles2-mesa-dev
+              build-essential ninja-build gperf libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev autoconf dh-autoreconf autoconf-archive libgles2-mesa-dev libxi-dev
 
             # Additionally required by qt5-base
             QT_APT_PACKAGES:
