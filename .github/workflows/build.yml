@@ -80,8 +80,7 @@ jobs:
 
             # Additionally required by qt5-base
             QT_APT_PACKAGES:
-              libxext-dev libxfixes-dev libxrender-dev \
-              libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev"
+              libxext-dev libxfixes-dev libxrender-dev libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev
           run: |
             sudo apt -y update
             sudo apt -y dist-upgrade
