@@ -1,0 +1,29 @@
+{
+	"BUILD_DIR" : "/home/bigblue/MyCode/GameOfLifeVisualizer/build/src/visualization/game_of_life_autogen",
+	"CMAKE_BINARY_DIR" : "/home/bigblue/MyCode/GameOfLifeVisualizer/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/bigblue/MyCode/GameOfLifeVisualizer/build/src/visualization",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization",
+	"CMAKE_SOURCE_DIR" : "/home/bigblue/MyCode/GameOfLifeVisualizer",
+	"INCLUDE_DIR" : "/home/bigblue/MyCode/GameOfLifeVisualizer/build/src/visualization/game_of_life_autogen/include",
+	"INPUTS" : 
+	[
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/pulsar.ico",
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/screenshot.ico",
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/settings.ico",
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/image.ico",
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/arrow.ico",
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/save.ico",
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/stop.ico",
+		"/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/Icons/play.ico"
+	],
+	"LOCK_FILE" : "/home/bigblue/MyCode/GameOfLifeVisualizer/build/src/visualization/CMakeFiles/game_of_life_autogen.dir/AutoRcc_GameOfLifeApp_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "GameOfLifeApp" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_GameOfLifeApp.cpp",
+	"RCC_EXECUTABLE" : "/usr/lib/qt5/bin/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/home/bigblue/MyCode/GameOfLifeVisualizer/build/src/visualization/CMakeFiles/game_of_life_autogen.dir/AutoRcc_GameOfLifeApp_EWIEGA46WW_Used.txt",
+	"SOURCE" : "/home/bigblue/MyCode/GameOfLifeVisualizer/src/visualization/GameOfLifeApp.qrc",
+	"VERBOSITY" : 0
+}
