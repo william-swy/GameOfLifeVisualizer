@@ -92,7 +92,5 @@ jobs:
           if: ${{ matrix.os == 'ubuntu-latest' }}
           shell: bash
           run: |
-            cmake --version
-            ninja --version
             cmake -B ${{ env.build_dir }} -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
             cmake --build ${{ env.build_dir }} --target all
