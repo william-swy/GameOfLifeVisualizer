@@ -10,9 +10,7 @@ jobs:
       CC: clang
       CXX: clang++
       APT_PACKAGES:
-        curl unzip tar libxt-dev gperf libxaw7-dev cifs-utils build-essential libxcursor-dev autoconf libudev-dev autoconf-archive
-      # Additionally required by qt5-base
-      QT_APT_PACKAGES:
+        gperf libxaw7-dev cifs-utils libxcursor-dev autoconf libudev-dev autoconf-archive \
         libxext-dev libxfixes-dev libxrender-dev \
         libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev
 
@@ -57,7 +55,6 @@ jobs:
         shell: bash
         run: |
           sudo apt-get -y install ${{ env.APT_PACKAGES }}
-          sudo apt-get -y install ${{ env.QT_APT_PACKAGES }}
 
       - name: ${{ runner.os }} - Generate Dependencies and Build
         shell: bash
