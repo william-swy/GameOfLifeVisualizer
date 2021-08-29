@@ -5,103 +5,64 @@ on: [push, pull_request]
 jobs:
   build:
     env:
-      build_dir: ${{ github.workspace }}/build
+      BUILD_DIR: ${{ github.workspace }}/build
+      BUILD_TYPE: Release
+      CC: clang
+      CXX: clang++
+      APT_PACKAGES:
+        curl unzip tar libxt-dev gperf libxaw7-dev cifs-utils build-essential zip \
+        libx11-dev libxkbcommon-x11-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev \
+        mesa-common-dev libxinerama-dev libxxf86vm-dev libxcursor-dev yasm libnuma1 \
+        libnuma-dev flex libbison-dev autoconf libudev-dev libncurses5-dev libtool \
+        libxrandr-dev xutils-dev dh-autoreconf autoconf-archive libgles2-mesa-dev
+      # Additionally required by qt5-base
+      QT_APT_PACKAGES:
+              libxext-dev libxfixes-dev libxrender-dev \
+              libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev
 
-    name: ${{ matrix.os }}-hosted-basic
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - os: windows-latest
-            triplet: x64-windows
-            build-type: Release
-          - os: ubuntu-latest
-            triplet: x64-linux
-            build-type: Release
-
+    name: ubuntu-latest-hosted-basic
+    runs-on: ubuntu-latest
 
     steps:
-        - uses: actions/checkout@v2
-          with:
-            submodules: recursive
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
-        - name: Setup cmake
-          uses: jwlawson/actions-setup-cmake@v1.9
-          with:
-            cmake-version: "3.18"
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.9
+        with:
+          cmake-version: "3.18"
 
-        - name: Install MSVC compiler
-          if: ${{ matrix.os == 'windows-latest' }}
-          uses: ilammy/msvc-dev-cmd@v1
-          with:
-            toolset: 14.2
-            arch: ${{ matrix.arch }}
+      - name: Cache vcpkg
+        id: cache-vcpkg
+        uses: pat-s/always-upload-cache@v2.1.5
+        with:
+          path: |
+            ${{ github.workspace }}/vcpkg
+            ${{ env.BUILD_DIR }}/vcpkg_installed
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
 
-        - name: Restore from cache and install vcpkg
-          # Download and build vcpkg, without installing any port. If content is cached already, it is a no-op.
-          uses: lukka/run-vcpkg@v7
-          with:
-            # Just install vcpkg for now, do not install any ports in this step yet.
-            setupOnly: true
-            # Location of the vcpkg submodule in the Git repository.
-            vcpkgDirectory: ${{ github.workspace }}/vcpkg
-            # Since the cache must be invalidated when content of the vcpkg.json file changes, let's
-            # compute its hash and append this to the computed cache's key.
-            appendedCacheKey: ${{ hashFiles( '**/vcpkg_manifest/vcpkg.json' ) }}
-            vcpkgTriplet: ${{ matrix.triplet }}
-            # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
-            additionalCachedPaths: ${{ env.build_dir }}/vcpkg_installed
+      - name: Bootstrap vcpkg
+        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+        run: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh
 
-        - name: Setup Ninja Windows
-          uses: ashutoshvarma/setup-ninja@master
-          with:
-            version: 1.10.0
+      - name: Setup Ninja
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          version: 1.10.0
 
-        - name: Win-${{ matrix.arch }} - Generate Dependencies and Build
-          if: ${{ matrix.os == 'windows-latest' }}
-          shell: powershell
-          env:
-            CC: cl.exe
-            CXX: cl.exe
-          run: |
-            cmake --version
-            ninja --version
-            cmake -B ${{ env.build_dir }} -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-            cmake --build ${{ env.build_dir }} --target all
+      - name: Install Linux System Dependencies
+        shell: bash
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y dist-upgrade
+          sudo apt-get -y install ${{ env.APT_PACKAGES }}
+          sudo apt-get -y install ${{ env.QT_APT_PACKAGES }}
 
-        - name: Install Linux System Dependencies
-          if: ${{ matrix.os == 'ubuntu-latest' }}
-          shell: bash
-          env:
-            APT_PACKAGES:
-              at curl unzip tar libxt-dev gperf libxaw7-dev cifs-utils \
-              build-essential g++ gfortran zip libx11-dev libxkbcommon-x11-dev libxi-dev \
-              libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libxinerama-dev libxxf86vm-dev \
-              libxcursor-dev yasm libnuma1 libnuma-dev python-six python3-six python-yaml \
-              flex libbison-dev autoconf libudev-dev libncurses5-dev libtool libxrandr-dev \
-              xutils-dev dh-autoreconf autoconf-archive libgles2-mesa-dev ruby-full \
-              pkg-config meson
-
-            # Additionally required by qt5-base
-            QT_APT_PACKAGES:
-              libxext-dev libxfixes-dev libxrender-dev \
-              libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev"
-          run: |
-            sudo apt-get -y update
-            sudo apt-get -y dist-upgrade
-            sudo apt-get -y install ${{ env.APT_PACKAGES }}
-            sudo apt-get -y install ${{ env.QT_APT_PACKAGES }}
-
-        - name: Ubuntu-${{ matrix.arch }} - Generate Dependencies and Build
-          if: ${{ matrix.os == 'ubuntu-latest' }}
-          shell: bash
-          env:
-            CC: gcc
-            CXX: g++
-          run: |
-            cmake --version
-            ninja --version
-            cmake -B ${{ env.build_dir }} -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-            cmake --build ${{ env.build_dir }} --target all
+      - name: ${{ runner.os }} - Generate Dependencies and Build
+        shell: bash
+        run: |
+          cmake --version
+          ninja --version
+          cmake -B ${{ env.BUILD_DIR }} -GNinja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          cmake --build ${{ env.BUILD_DIR }} --target all
