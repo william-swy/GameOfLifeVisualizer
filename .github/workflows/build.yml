@@ -11,13 +11,12 @@ jobs:
       CXX: clang++
       APT_PACKAGES:
         curl unzip tar libxt-dev gperf libxaw7-dev cifs-utils build-essential \
-        libxkbcommon-x11-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev \
-        libxxf86vm-dev libxcursor-dev autoconf libudev-dev libtool xutils-dev \
-        dh-autoreconf autoconf-archive
+        libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev autoconf 
+        libudev-dev libtool xutils-dev autoconf-archive
       # Additionally required by qt5-base
       QT_APT_PACKAGES:
-              libxext-dev libxfixes-dev libxrender-dev \
-              libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev
+        libxext-dev libxfixes-dev libxrender-dev \
+        libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev
 
     name: ubuntu-latest-hosted-basic
     runs-on: ubuntu-latest
