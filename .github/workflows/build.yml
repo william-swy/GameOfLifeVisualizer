@@ -11,8 +11,8 @@ jobs:
       CXX: clang++
       APT_PACKAGES:
         curl unzip tar libxt-dev gperf libxaw7-dev cifs-utils build-essential \
-        libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev autoconf 
-        libudev-dev libtool xutils-dev autoconf-archive
+        libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev autoconf libudev-dev \
+        libtool xutils-dev autoconf-archive
       # Additionally required by qt5-base
       QT_APT_PACKAGES:
         libxext-dev libxfixes-dev libxrender-dev \
