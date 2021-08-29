@@ -10,9 +10,8 @@ jobs:
       CC: clang
       CXX: clang++
       APT_PACKAGES:
-        gperf libxaw7-dev cifs-utils libxcursor-dev autoconf libudev-dev autoconf-archive \
-        libxext-dev libxfixes-dev libxrender-dev \
-        libxcb1-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev
+        gperf libxaw7-dev cifs-utils libxcursor-dev autoconf libudev-dev \
+        libxfixes-dev libxrender-dev libx11-xcb-dev libxcb-glx0-dev libxcb-util0-dev
 
     name: ubuntu-latest-hosted-basic
     runs-on: ubuntu-latest
