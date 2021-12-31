@@ -1,63 +1,64 @@
-name: Build Test and Lint
+# name: Build Test and Lint
 
-on: [push, pull_request]
+# on: [push, pull_request]
 
-jobs:
-  build:
-    env:
-      BUILD_DIR: ${{ github.workspace }}/build
-      BUILD_TYPE: Release
-      CC: clang
-      CXX: clang++
-      APT_PACKAGES:
-        gperf libxaw7-dev cifs-utils libxcursor-dev autoconf libudev-dev
+# jobs:
+#   build:
+#     env:
+#       BUILD_DIR: ${{ github.workspace }}/build
+#       BUILD_TYPE: Release
+#       CC: clang
+#       CXX: clang++
+#       APT_PACKAGES:
+#         gperf libxaw7-dev cifs-utils libxcursor-dev autoconf libudev-dev
 
-    name: ubuntu-latest-hosted-basic
-    runs-on: ubuntu-latest
+#     name: ubuntu-latest-hosted-basic
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           submodules: recursive
 
-      - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v1.9
-        with:
-          cmake-version: "3.18"
+#       - name: Update System Packages
+#         shell: bash
+#         run: |
+#           sudo apt-get -y update
+#           sudo apt-get -y dist-upgrade
 
-      - name: Cache vcpkg
-        id: cache-vcpkg
-        uses: pat-s/always-upload-cache@v2.1.5
-        with:
-          path: |
-            ${{ github.workspace }}/vcpkg
-            ${{ env.BUILD_DIR }}/vcpkg_installed
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
+#       - name: Install System Dependencies
+#         shell: bash
+#         run: |
+#           sudo apt-get -y install ${{ env.APT_PACKAGES }}
 
-      - name: Bootstrap vcpkg
-        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
-        run: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh
+#       - name: Setup cmake
+#         uses: jwlawson/actions-setup-cmake@v1.9
+#         with:
+#           cmake-version: "3.18"
 
-      - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
-          version: 1.10.0
+#       - name: Setup Ninja
+#         uses: ashutoshvarma/setup-ninja@master
+#         with:
+#           version: 1.10.0
 
-      - name: Update System Packages
-        shell: bash
-        run: |
-          sudo apt-get -y update
-          sudo apt-get -y dist-upgrade
+#       - name: Cache vcpkg
+#         id: cache-vcpkg
+#         uses: pat-s/always-upload-cache@v2.1.5
+#         with:
+#           path: |
+#             ${{ github.workspace }}/vcpkg
+#             ${{ env.BUILD_DIR }}/vcpkg_installed
+#           key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
 
-      - name: Install System Dependencies
-        shell: bash
-        run: |
-          sudo apt-get -y install ${{ env.APT_PACKAGES }}
+#       - name: Bootstrap vcpkg
+#         if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+#         run: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh
 
-      - name: ${{ runner.os }} - Generate Dependencies and Build
-        shell: bash
-        run: |
-          cmake --version
-          ninja --version
-          cmake -B ${{ env.BUILD_DIR }} -GNinja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-          cmake --build ${{ env.BUILD_DIR }} --target all
+
+#       - name: Generate Dependencies and Build
+#         shell: bash
+#         run: |
+#           cmake --version
+#           ninja --version
+#           cmake -B ${{ env.BUILD_DIR }} -GNinja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+#           cmake --build ${{ env.BUILD_DIR }} --target all

@@ -8,7 +8,7 @@
         },
         {
             "name": "catch2",
-            "version>=": "2.13.6#1"
+            "version>=": "2.13.7#1"
         }
     ],
     "builtin-baseline": "7d2541c69cc2f9099a118de1a80f59e29c5de15d"

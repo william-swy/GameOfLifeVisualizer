@@ -364,3 +364,12 @@ FodyWeavers.xsd
 
 # CMake IDE Integration
 CMakeSettings.json
+
+# CTest output
+/Testing
+
+# Build directories
+/build
+
+# IDE folders
+/.vscode

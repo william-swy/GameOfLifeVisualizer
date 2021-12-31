@@ -21,11 +21,5 @@ add_library(
 
 target_include_directories(gif_generator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  target_compile_options(gif_generator PRIVATE -Wall -Wpedantic -Wextra -Werror)
-elseif(MSVC)
-# Supress spectre cause being hacked isn't a big issue for this project
-  target_compile_options(gif_generator PRIVATE /external:anglebrackets /external:W0 /Wall /W4 /wd5045)
-endif()
-
-target_compile_features(gif_generator PRIVATE cxx_std_20)
+target_link_libraries(gif_generator PRIVATE project_warnings
+  project_options)
